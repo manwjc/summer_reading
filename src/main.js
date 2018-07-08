@@ -5,8 +5,15 @@ import App from './App'
 import router from './router'
 
 import axios from 'axios'
-const baseURL = '/baseApi'
-axios.defaults.baseURL = baseURL
+import qs from 'qs';
+
+Vue.prototype.$qs = qs;
+
+if(process.env.NODE_ENV === 'development'){
+	let baseURL = '/baseApi'
+	console.log('baseURL:' + baseURL);
+	axios.defaults.baseURL = baseURL
+}
 Vue.prototype.$axios = axios
 // Object.defineProperties(Vue.prototype, '$axios', {value: axios})
 
@@ -21,6 +28,14 @@ FastClick.attach(document.body);
 // import store from './store/store.js'
 
 Vue.config.productionTip = false
+
+router.beforeEach((to, from, next) => {
+	/* 路由发生变化修改页面title */
+	if (to.meta.title) {
+		document.title = to.meta.title
+	}
+	next()
+})
 
 /* eslint-disable no-new */
 new Vue({

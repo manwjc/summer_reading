@@ -65,15 +65,13 @@
 			getNameList() {
 				let self = this;
 
-				self.$axios.get('/login').then(
-					self.$axios.get('/wxApi/recommendSignUp', {
-						params: {}
-					})
-					.then((res)=>{
-						console.log(res.data);
-						self.nameData = res.data.data;
-					})
-				)
+				self.$axios.get('/wx/wxApi/recommendSignUp', {
+					params: {}
+				})
+				.then((res)=>{
+					console.log(res.data);
+					self.nameData = res.data.data;
+				})
 			},
 		}
 	}

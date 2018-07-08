@@ -1,34 +1,103 @@
 <template>
   <div id="app">
+    <div style="display:none"><img :src="shareImg01" /></div>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+	import Vue from 'vue'
+	import shareImg from './assets/images/share_img.jpg'
+	import shareImg01 from './assets/images/share_img01.jpg'
+	import wx from 'weixin-js-sdk'
   export default {
     name: "app",
     data() {
-      return {};
+      return {
+          wxInfo: null,
+          shareImg: shareImg,
+          shareImg01: shareImg01
+      };
     },
     mounted() {
-      var fun = function(doc, win) {
-        var docEl = doc.documentElement,
-          resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-          recalc = function() {
-            var clientWidth = docEl.clientWidth > 640 ? 640 : docEl.clientWidth;
-            if (!clientWidth) return;
-  
-            //这里是假设在640px宽度设计稿的情况下，1rem = 10px；
-            //可以根据实际需要修改
-            docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
-            console.log(100 * (clientWidth / 640) + 'px');
-          };
-        if (!doc.addEventListener) return;
-        win.addEventListener(resizeEvt, recalc, false);
-        doc.addEventListener('DOMContentLoaded', recalc, false);
-      }
-      fun(document, window);
+        let self = this;
+        var shareDataaa = {
+            "imgUrl" : self.shareImg,    // 分享显示的缩略图地址
+            "link" : 'index.html',    // 分享地址
+            "desc" : '原价699元，新生99元报名',   // 分享描述
+            "title" : '暑假英文阅读戏剧表演营'   // 分享标题
+        }
+        self.getWxInfo();
+
+        var fun = function(doc, win) {
+            var docEl = doc.documentElement,
+            resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+            recalc = function() {
+                var clientWidth = docEl.clientWidth > 640 ? 640 : docEl.clientWidth;
+                if (!clientWidth) return;
+    
+                //这里是假设在640px宽度设计稿的情况下，1rem = 10px；
+                //可以根据实际需要修改
+                docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+                console.log(100 * (clientWidth / 640) + 'px');
+            };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        }
+        fun(document, window);
     },
+    methods: {
+        getWxInfo() {
+            let self = this;
+
+            self.$axios.get('/wx/wxApi/getWxInfo', {
+                params: {currentUrl: location.href.split('#')[0]}
+            })
+            .then((res)=>{
+                let data = res.data;
+                if(data.code === '0'){
+                    self.wxInfo = data.data;
+                    self.wxShareInit();
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        },
+        wxShareInit() {
+            //配置微信信息
+            wx.config ({
+                debug : true,    // true:调试时候弹窗
+                appId : self.wxInfo.appid,  // 微信appid
+                timestamp : self.wxInfo.timeStamp, // 时间戳
+                nonceStr : self.wxInfo.nonceStr,  // 随机字符串
+                signature : self.wxInfo.sign, // 签名
+                jsApiList : [
+                    // 所有要调用的 API 都要加到这个列表中
+                    'onMenuShareTimeline',       // 分享到朋友圈接口
+                    'onMenuShareAppMessage',  //  分享到朋友接口
+                ]
+            });
+            wx.ready (function () {
+                // 微信分享的数据
+                var shareData = {
+                    "imgUrl" : '../assets/share_img.jpg',    // 分享显示的缩略图地址
+                    "link" : 'index.html',    // 分享地址
+                    "desc" : '原价699元，新生99元报名',   // 分享描述
+                    "title" : '暑假英文阅读戏剧表演营'   // 分享标题
+                }
+                wx.onMenuShareTimeline (shareData)
+                wx.onMenuShareAppMessage (shareData)
+            })
+            wx.error(function(res){ 
+                // config信息验证失败会执行error函数，如签名过期导致验证失败，
+                // 具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，
+                //对于SPA可以在这里更新签名。 
+                alert("好像出错了！！");
+            });
+        }
+    }
   };
 </script>
 
@@ -39,6 +108,7 @@
   
   body {
     font-size: 0.16rem;
+    tap-highlight-color: rgba(143,142,148,0); focus-ring-color: rgba(0, 0, 0, 0); -webkit-tap-highlight-color: rgba(143,142,148,0); -webkit-focus-ring-color: rgba(0, 0, 0, 0); 
   }
   
   html,
@@ -91,8 +161,8 @@
     color: #42b983;
   }
   
-  input {
-    outline: none;
+  select, input {
+    outline: none; font-size: 0.3rem;
   }
   
   .relative {
@@ -195,24 +265,31 @@
   
   .label_name {
     display: block;
-    min-width: 0.9rem;
+    min-width: 1.3rem;
     text-align: justify;
     text-align-last: justify;
-    font-size: 0.3rem;
+    font-size: 0.26rem;
   }
   
   .input_normal {
     border: 1px solid #9e9fa1;
-    padding: 0.08rem 0;
     border-radius: 0.02rem;
     text-indent: 0.5em;
+    height: 0.6rem;
+    line-height: 0.6rem;
   }
   
   .head_img {
-    width: 0.4rem;
-    height: 0.4rem;
+    width: 0.7rem;
+    height: 0.7rem;
+  }
+  .head_img img{
+    width: 0.7rem;
+    height: 0.7rem;
     border-radius: 1rem;
   }
 
   .form_list{ min-height: calc(260*100vh/640); padding-bottom: 0.15rem; }
+  .message{ font-size: 0.24rem !important; padding: 0 0.1rem;}
+  .underline{ text-decoration: underline;}
 </style>

@@ -4,69 +4,47 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const IndexNew = resolve => require(['../pages/IndexNew'], resolve)
-const ApplyFormNew = resolve => require(['../pages/ApplyFormNew'], resolve)
-const NameListNew = resolve => require(['../pages/NameListNew'], resolve)
-const IndexOld = resolve => require(['../pages/IndexOld'], resolve)
-const ApplyFormOld = resolve => require(['../pages/ApplyFormOld'], resolve)
-const NameListOld = resolve => require(['../pages/NameListOld'], resolve)
+const IndexPage = resolve => require(['../pages/Index'], resolve)
+const CheckPhone = resolve => require(['../pages/CheckPhone'], resolve)
+const NameList = resolve => require(['../pages/NameList'], resolve)
+const NewGay = resolve => require(['../pages/NewGay'], resolve)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: IndexNew,
+      name: 'index',
+      component: IndexPage,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        title: '暑假英文阅读戏剧表演营'
       }
     },
     {
-      path: '/indexNew',
-      name: 'indexNew',
-      component: IndexNew,
+      path: '/checkPhone',
+      name: 'checkPhone',
+      component: CheckPhone,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        title: '暑假英文阅读戏剧表演营'
       }
     },
     {
-      path: '/applyFormNew',
-      name: 'applyFormNew',
-      component: ApplyFormNew,
+      path: '/nameList',
+      name: 'nameList',
+      component: NameList,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        title: '暑假英文阅读戏剧表演营'
       }
     },
     {
-      path: '/nameListNew',
-      name: 'nameListNew',
-      component: NameListNew,
+      path: '/newGay',
+      name: 'newGay',
+      component: NewGay,
       meta: {
-        keepAlive: true
-      }
-    },
-    {
-      path: '/indexOld',
-      name: 'indexOld',
-      component: IndexOld,
-      meta: {
-        keepAlive: true
-      }
-    },
-    {
-      path: '/applyFormOld',
-      name: 'applyFormOld',
-      component: ApplyFormOld,
-      meta: {
-        keepAlive: true
-      }
-    },
-    {
-      path: '/nameListOld',
-      name: 'nameListOld',
-      component: NameListOld,
-      meta: {
-        keepAlive: true
+        keepAlive: true,
+        title: '暑假英文阅读戏剧表演营'
       }
     }
   ]

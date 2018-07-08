@@ -5,7 +5,7 @@
 		<img src="../assets/images/p_c_03.jpg">
 		<img src="../assets/images/p_c_04.jpg">
 		<img src="../assets/images/p_c_05.jpg">
-		<router-link :to="{name: 'applyFormOld'}"><img src="../assets/images/p_c_06.jpg"></router-link>
+		<img src="../assets/images/p_c_06.jpg">
 		<img src="../assets/images/p_a_07.jpg">
 	</div>
 </template>

@@ -1,5 +1,5 @@
     
-let validate =  {
+export default {
     //验证手机号
     validateMobile: function(str){
         return /^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(str);
@@ -20,6 +20,10 @@ let validate =  {
     validateImgCode: function(str){
         return /^[0-9a-z]{4}$/i.test(str);
     },
+    //验证年龄：1-2位整数
+    validateAge: function(str){
+        return /^\d{1,3}$/i.test(str);
+    },
     //验证短信校验码
     validateOTP: function(str){
         return /^\d{4,7}$/i.test(str);
@@ -39,8 +43,4 @@ let validate =  {
     validateName:function(str){
         return /^[a-z\u4e00-\u9fa5*]{2,12}$/.test(str);
     }
-}
-
-export default {
-    validate
 }
