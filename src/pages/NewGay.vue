@@ -132,9 +132,12 @@
 					})
 
 				self.$axios.get('/wx/wxApi/getTermNum', {
-					params: {termNum:self.termList[self.defaultTerm-1].time}
+					params: {
+						termNum:self.termList[self.defaultTerm-1].time,
+						readRoomName:self.readingRooms[self.defaultRoom-1].name
+					}
 				}).then((res)=>{
-					if(res.data.data*1 >= 12){
+					if(res.data.canSignUp === false){
 						self.$showMsg('本期报名人数已满，欢迎到店领取精美绘本');
 					}else{
 						self.$axios({

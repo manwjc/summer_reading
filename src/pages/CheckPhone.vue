@@ -94,6 +94,8 @@
 				.then((res)=>{
 					if(res.data.code === '0'){
 						this.getUserInfo();
+					}else{
+						self.$showMsg(res.data.message);
 					}
 				})
 				.catch((error) => {
