@@ -137,7 +137,7 @@
 						readRoomName:self.readingRooms[self.defaultRoom-1].name
 					}
 				}).then((res)=>{
-					if(res.data.canSignUp === false){
+					if(!res.data.data.canSignUp){
 						self.$showMsg('本期报名人数已满，欢迎到店领取精美绘本');
 					}else{
 						self.$axios({
