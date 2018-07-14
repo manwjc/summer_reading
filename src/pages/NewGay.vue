@@ -7,7 +7,7 @@
 			<div class="form_box">
 				<form id="FormBox" method="post">
 					<p class="displaybox">
-						<label class="label_name" for="userName">家长姓名</label><span>：</span>
+						<label class="label_name" for="userName">学员姓名</label><span>：</span>
 						<input class="input_normal boxflex01" type="text" name="userName" v-model="userName">
 					</p>
 					<p class="displaybox">
