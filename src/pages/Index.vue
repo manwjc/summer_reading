@@ -3,7 +3,8 @@
 		<img @click.prevent src="../assets/images/p_a_01.jpg">
 		<img @click.prevent src="../assets/images/p_a_02.jpg">
 		<img @click.prevent src="../assets/images/p_a_03.jpg">
-		<img @click.prevent src="../assets/images/p_a_04.jpg">
+		<img @click.prevent src="static/images/p_a_04_new.jpg" v-if="userData && userData.data && userData.data.utmSource === 'cmb'">
+		<img @click.prevent src="../assets/images/p_a_04.jpg" v-else>
 		<img @click.prevent src="../assets/images/p_a_05.jpg">
 		<div @click.prevent="joinIn"><img src="../assets/images/p_a_06.jpg"></div>
 		<img @click.prevent src="../assets/images/p_a_07.jpg">

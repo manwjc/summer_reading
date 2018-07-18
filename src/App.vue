@@ -27,7 +27,7 @@
             "desc" : '原价699元，新生99元报名',   // 分享描述
             "title" : '暑假英文阅读戏剧表演营'   // 分享标题
         }
-        self.getWxInfo();
+        //self.getWxInfo();
 
         var fun = function(doc, win) {
             var docEl = doc.documentElement,

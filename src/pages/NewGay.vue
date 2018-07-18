@@ -16,7 +16,10 @@
 					</p>
 					<p class="displaybox">
 						<label class="label_name" for="defaultRoom">阅读馆</label><span>：</span>
-						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" >
+						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" v-if="userData && userData.data && userData.data.utmSource === 'cmb'" >
+							<option v-for="(item,index) in readingRooms"  :value="index+1" v-if="index < 5">{{ item.name }}</option>
+						</select>
+						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" v-else >
 							<option v-for="(item,index) in readingRooms"  :value="index+1">{{ item.name }}</option>
 						</select>
 
@@ -73,31 +76,31 @@
 				termList: [],
 				//3-5岁
 				termList01: [
-					{time: '第一期 10:15--11:00'},
-					{time: '第一期 15:15--16:00'},
-					{time: '第一期 17:15--18:00'},
-					// {time: '第二期 10:15--11:00'},
-					// {time: '第二期 11:15--12:00'},
-					// {time: '第三期 10:15--11:00'},
-					// {time: '第三期 11:15--12:00'},
-					// {time: '第四期 10:15--11:00'},
-					// {time: '第四期 11:15--12:00'},
-					// {time: '第五期 10:15--11:00'},
-					// {time: '第五期 11:15--12:00'},
+					{time: '第一期 7月24日-7月28日 10:15-11:00'},
+					{time: '第一期 7月24日-7月28日 15:15-16:00'},
+					{time: '第一期 7月24日-7月28日 17:15-18:00'},
+					// {time: '第二期 10:15-11:00'},
+					// {time: '第二期 11:15-12:00'},
+					// {time: '第三期 10:15-11:00'},
+					// {time: '第三期 11:15-12:00'},
+					// {time: '第四期 10:15-11:00'},
+					// {time: '第四期 11:15-12:00'},
+					// {time: '第五期 10:15-11:00'},
+					// {time: '第五期 11:15-12:00'},
 				],
 				//6-8岁
 				termList02: [
-					{time: '第一期 11:15--12:00'},
-					{time: '第一期 14:15--15:00'},
-					{time: '第一期 16:15--17:00'},
-					// {time: '第二期 10:15--11:00'},
-					// {time: '第二期 11:15--12:00'},
-					// {time: '第三期 10:15--11:00'},
-					// {time: '第三期 11:15--12:00'},
-					// {time: '第四期 10:15--11:00'},
-					// {time: '第四期 11:15--12:00'},
-					// {time: '第五期 10:15--11:00'},
-					// {time: '第五期 11:15--12:00'},
+					{time: '第一期 7月24日-7月28日 11:15-12:00'},
+					{time: '第一期 7月24日-7月28日 14:15-15:00'},
+					{time: '第一期 7月24日-7月28日 16:15-17:00'},
+					// {time: '第二期 10:15-11:00'},
+					// {time: '第二期 11:15-12:00'},
+					// {time: '第三期 10:15-11:00'},
+					// {time: '第三期 11:15-12:00'},
+					// {time: '第四期 10:15-11:00'},
+					// {time: '第四期 11:15-12:00'},
+					// {time: '第五期 10:15-11:00'},
+					// {time: '第五期 11:15-12:00'},
 				],
 				defaultTerm: 1,
 				partNum: '',
@@ -109,7 +112,7 @@
 			}
 		},
 		mounted() {
-			console.log(Valid)
+			this.getUserData();
 		},
 		methods: { 
 			submitForm() {
@@ -148,18 +151,15 @@
 						.then((res) => {
 							let data = res.data;
 							if(data.code === '0'){
-								self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
-									self.userData = res.data;
-									if(self.userData.code === '0'){
-										if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
-											self.$router.push({name:"nameList"})
-										}else{
-											self.toPay(data.data);
-										}
+								if(self.userData.code === '0'){
+									if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
+										self.$router.push({name:"nameList"})
 									}else{
-										self.$showMsg(self.userData.message);
+										self.toPay(data.data);
 									}
-								})
+								}else{
+									self.$showMsg(self.userData.message);
+								}
 							}else{
 								self.$showMsg(data.message)
 							}
@@ -200,8 +200,6 @@
                         break;
                     }
                     if (item.reg&&!item.reg(self[name])) {
-                        message = messages[name].regex;
-                        break;
                     }
                 }
                 return message;
@@ -255,6 +253,12 @@
 						self.$router.push({name:"newGay"}) 
 					}  
 				});
+			},
+			getUserData() {
+				let self = this;
+				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
+					self.userData = res.data;
+				})
 			}
 
 		},
