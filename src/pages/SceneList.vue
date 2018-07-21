@@ -3,11 +3,11 @@
 		<div class="mask" v-show="maskShow" @click="hideMask"><img @click.prevent src="../assets/images/toShare.png"></div>
 		<img @click.prevent src="static/images/page1_01.jpg">
 		<div class="form_list01">
-			<div class="scene_list f22 bold" :class="index % 2 === 1 ? 'minuleft20' : 'mleft20'" v-for="(item, index) in nameList">
-				<div class="scene_name" v-if="index < nameList.length - 1">{{index+1}}. 小剧场第{{index | numToCh}}幕 SCENE {{index+1}} {{item.length}}</div>
+			<div class="scene_list f22 bold" :class="index % 2 === 1 ? 'minuleft20' : 'mleft20'" v-for="(item, index) in listData">
+				<div class="scene_name" v-if="index < nameList.length - 1">{{index+1}}. {{item.name}} SCENE {{index+1}} {{item.length}}</div>
 				<div class="scene_name5" v-else>
-					{{index+1}}. 小剧场秀(亲子开放日)
-					<div>OPEN DAY</div>
+					{{index+1}}. {{item.name}}
+					<div>{{item.englishName}}</div>
 				</div>
 			</div>
 		</div>
@@ -37,24 +37,24 @@
 							userName: 'jerry',
 						}
 					],
-				nameData: [],
+				listData: [],
 				maskShow: false
 			}
 		},
 		mounted() {
 			let self = this;
-			//self.getNameList();
+			self.getList();
 		},
 		methods: { 
-			getNameList() {
+			getList() {
 				let self = this;
 
-				self.$axios.get('/wx/wxApi/recommendSignUp', {
+				self.$axios.get('/wx/chelApi/getCoursewareList', {
 					params: {}
 				})
 				.then((res)=>{
 					if(res.data.code === '0'){
-						self.nameData = res.data.data;
+						self.listData = res.data.data;
 					}
 				})
 				.catch((error) => {
