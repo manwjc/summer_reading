@@ -32,8 +32,8 @@ module.exports = {
       
       //统一替换baseapi
       '/baseApi': {
-        // target: 'http://51046916.ngrok.io',
-      	target: 'https://www.chel-c.com',
+        target: 'http://192.168.1.117',
+      	// target: 'https://www.chel-c.com',
       	changeOrigin: true,
       	pathRewrite: {
       		'^/baseApi': ''

@@ -108,9 +108,9 @@
   
   body {
     font-size: 0.16rem;
+    text-align: left;
     tap-highlight-color: rgba(143,142,148,0); focus-ring-color: rgba(0, 0, 0, 0); -webkit-tap-highlight-color: rgba(143,142,148,0); -webkit-focus-ring-color: rgba(0, 0, 0, 0); 
   }
-  
   html,
   body,
   p {
@@ -177,12 +177,28 @@
     margin-left: 0.1rem;
   }
   
+  .mleft20 {
+    margin-left: 0.2rem !important;
+  }
+  
+  .minuleft20 {
+    margin-left: -0.2rem !important;
+  }
+  
   .mb0 {
     margin-bottom: 0 !important;
   }
   
   .mb10 {
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
+  }
+  
+  .mtop10 {
+    margin-top: 10px !important;
+  }
+  
+  .center {
+    text-align: center;
   }
   
   .left {
@@ -201,6 +217,10 @@
     font-size: 0.2rem;
   }
   
+  .f22 {
+    font-size: 0.22rem;
+  }
+  
   .f24 {
     font-size: 0.24rem;
   }
@@ -212,6 +232,7 @@
   .grey {
     color: #a3a4a6;
   }
+  .bold{ font-weight: bold;}
   
   .w54 {
     width: 0.54rem;
@@ -292,4 +313,7 @@
   .form_list{ min-height: calc(260*100vh/640); padding-bottom: 0.15rem; }
   .message{ font-size: 0.24rem !important; padding: 0 0.1rem;}
   .underline{ text-decoration: underline;}
+    
+  .mask{ width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); position: absolute; z-index: 999;}
+  .mask img{ width: 100%;}
 </style>
