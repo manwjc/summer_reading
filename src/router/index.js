@@ -57,7 +57,7 @@ export default new Router({
       component: SceneList,
       meta: {
         keepAlive: true,
-        title: '乔西“小剧场”阅读表演营'
+        title: '乔希“小剧场”阅读表演营'
       }
     },
     {
@@ -66,7 +66,7 @@ export default new Router({
       component: SceneCon,
       meta: {
         keepAlive: true,
-        title: '乔西“小剧场”阅读表演营'
+        title: '乔希“小剧场”阅读表演营'
       }
     },
     {
@@ -75,7 +75,7 @@ export default new Router({
       component: SceneLastDay,
       meta: {
         keepAlive: true,
-        title: '乔西“小剧场”阅读表演营'
+        title: '乔希“小剧场”阅读表演营'
       }
     }
   ]
