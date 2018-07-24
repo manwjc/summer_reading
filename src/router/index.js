@@ -12,6 +12,7 @@ const NewGay = resolve => require(['../pages/NewGay'], resolve)
 const SceneList = resolve => require(['../pages/SceneList'], resolve)
 const SceneCon = resolve => require(['../pages/SceneCon'], resolve)
 const SceneLastDay = resolve => require(['../pages/SceneLastDay'], resolve)
+const SceneShare = resolve => require(['../pages/SceneShare'], resolve)
 
 export default new Router({
   routes: [
@@ -73,6 +74,15 @@ export default new Router({
       path: '/sceneLastDay',
       name: 'sceneLastDay',
       component: SceneLastDay,
+      meta: {
+        keepAlive: true,
+        title: '乔希“小剧场”阅读表演营'
+      }
+    },
+    {
+      path: '/sceneShare/:id',
+      name: 'sceneShare',
+      component: SceneShare,
       meta: {
         keepAlive: true,
         title: '乔希“小剧场”阅读表演营'
