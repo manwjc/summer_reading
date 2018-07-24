@@ -15,7 +15,6 @@
 		<!-- <div @click.prevent="showMask"><img @click.prevent src="../assets/images/p_c_06.jpg"></div> -->
 	</div>
 </template>
-
 <script>
 	export default {
 		data() {

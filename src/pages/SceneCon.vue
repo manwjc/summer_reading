@@ -13,7 +13,7 @@
 					class="upload-box center"
 					ref="upload"
 					type="post"
-					action="http://192.168.1.117/wx/chelApi/uploadVideo"
+					:action="importFileUrl"
 					:limit="1"
 					:file-list="fileList"
 					:upload-error="uploadError"
