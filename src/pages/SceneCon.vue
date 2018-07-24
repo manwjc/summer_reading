@@ -219,11 +219,12 @@
 			beforeAvatarUpload (file) {
 				const fileArr = file.name.split('.');
 				const fileLength = fileArr.length;
-				const extension = fileArr[fileLength - 1] === 'mp4';
+				const extension = fileArr[fileLength - 1] === 'mp4' || file.name.indexOf('mov') > -1;
+				alert(file.name);
 				const isLt2M = file.size / 1024 / 1024 < 100;
-				if (!extension) {
-					this.$showMsg('上传文件只能是 mp4 格式!')
-				}
+				// if (!extension) {
+				// 	this.$showMsg('上传文件只能是 mp4/mov 格式!')
+				// }
 				if (!isLt2M) {
 					this.$showMsg('上传文件大小不能超过 100MB!')
 				}
@@ -240,7 +241,7 @@
 			    let self = this;
 
 			    self.$axios.get('/wx/wechat/portal/getWechatSign', {
-			        params: {currentUrl: location.href.split('#')[0]}
+			        params: {url: location.href.split('#')[0]}
 			    })
 			    .then((res)=>{
 			        let data = res.data;
@@ -257,7 +258,7 @@
 				let self = this;
 			    //配置微信信息
 			    wx.config ({
-			        debug : false,    // true:调试时候弹窗
+			        debug : true,    // true:调试时候弹窗
 			        appId : self.wxInfo.appId, // 微信appid
 			        timestamp : self.wxInfo.timestamp, // 时间戳
 			        nonceStr : self.wxInfo.nonceStr, // 随机字符串
