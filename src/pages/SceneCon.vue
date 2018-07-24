@@ -18,11 +18,12 @@
 					:file-list="fileList"
 					:upload-error="uploadError"
 					:before-upload="beforeUpload"
+					:on-success="uploadSuccess" 
 					:auto-upload="false">
 					<el-button class="select-file"  slot="trigger" size="small" type="primary"></el-button>
-					<el-button style="margin-left: 10px;margin-top:20px;" size="small" type="success" @click="submitUpload">开始上传</el-button>
 					<div slot="tip" class="el-upload__tip">只能上传mp4文件，且不超过100MB</div>
 					</el-upload>
+					<el-button class="up-button" size="small" type="success" @click="submitUpload">开始上传</el-button>
 					<!--<img @click.prevent src="static/images/page2_01.jpg">-->
 
 				</div>
@@ -52,6 +53,7 @@
 	import Vue from 'vue'
 	import Element from 'element-ui'
 	import 'element-ui/lib/theme-chalk/index.css'
+	import shareImg from '../assets/images/share_img.jpg'
 	import wx from 'weixin-js-sdk'
 	//import $ from 'zepto'
 	import showMessage from 'vue-show-message'
@@ -87,6 +89,7 @@
 				uploadVideo : null,
 				mp3Url : "",
 				classBg6_8 : "",
+				shareImg: "https://www.chel-c.com/wx/" + shareImg
 
 			}
 		},
@@ -97,6 +100,7 @@
 			if(isAge3_5 !== "true"){
 				self.classBg6_8 = "bg6_8";
 			}
+
 			self.getWxInfo();
 			//self.getNameList();
 			self.$axios.get('/wx/chelApi/getCoursewareList', {
@@ -112,7 +116,7 @@
 								self.uploadVideo = matchData.uploadVideo;
 								self.upLoadData = matchData.id;
 								console.log("self.upLoadData",self.upLoadData)
-								self.nameList[2].url = "http://www.chel-c.com/" + matchData.homeworkUrl;
+								self.nameList[2].url = "https://www.chel-c.com/" + matchData.homeworkUrl;
 								for(let i=0,len=matchData.coursewareUrlList.length;i<len;i++){
 									if(matchData.coursewareUrlList[i].coursewareUrl.substr(-4,4) === ".mp3" ){
 										self.nameList[1].url = matchData.coursewareUrlList[i].coursewareUrl;
@@ -193,34 +197,31 @@
 				.then((res)=>{
 					// alert(JSON.stringify(res))
 			        let data = res.data;
-			        console.log("upload",data)
 
 			        if(data.code === '0'){
 			        	let host = "https://www.chel-c.com/";
-			           self.uploadVideo =host + data.data.APPENDIX_URL;
-			           document.getElementById("#video").src = self.uploadVideo
-			           //$("#video").attr("src",self.uploadVideo)  ;
-			           document.getElementById("#video").play();
-			        }
+			            self.uploadVideo =host + data.data.APPENDIX_URL;
+			        }else{
+						this.$showMsg('上传失败!')
+					}
 			    })
 			    .catch((error) => {
-			        console.log(error)
+			        alert(error)
 			    })
 				return false;	//拦截默认提交
 			},
 			uploadSuccess (file) {
-				console.log('上传文件', response,)
+				alert('上传文件成功！')
 			},
 			// 上传错误
 			uploadError (file) {
-				console.log('上传失败，请重试！')
+				alert('上传失败，请重试！')
 			},
 			// 上传前对文件的大小的判断
 			beforeAvatarUpload (file) {
 				const fileArr = file.name.split('.');
 				const fileLength = fileArr.length;
 				const extension = fileArr[fileLength - 1] === 'mp4' || file.name.indexOf('mov') > -1;
-				alert(file.name);
 				const isLt2M = file.size / 1024 / 1024 < 100;
 				// if (!extension) {
 				// 	this.$showMsg('上传文件只能是 mp4/mov 格式!')
@@ -228,13 +229,12 @@
 				if (!isLt2M) {
 					this.$showMsg('上传文件大小不能超过 100MB!')
 				}
-				return extension && isLt2M
+				return isLt2M
 			},
 			handleRemove(file) {
 				console.log(file);
 			},
-			submitUpload(file) {
-				console.log(file)
+			submitUpload() {
 				this.$refs.upload.submit();
 			},
 			getWxInfo() {
@@ -258,7 +258,7 @@
 				let self = this;
 			    //配置微信信息
 			    wx.config ({
-			        debug : true,    // true:调试时候弹窗
+			        debug : false,    // true:调试时候弹窗
 			        appId : self.wxInfo.appId, // 微信appid
 			        timestamp : self.wxInfo.timestamp, // 时间戳
 			        nonceStr : self.wxInfo.nonceStr, // 随机字符串
@@ -272,7 +272,7 @@
 			    wx.ready (function () {
 			        // 微信分享的数据
 			        var shareData = {
-			            "imgUrl" : '../assets/share_img.jpg',    // 分享显示的缩略图地址
+			            "imgUrl" : self.shareImg,    // 分享显示的缩略图地址
 			            "link" : location.href.split('#')[0]+'#'+location.href.split('#')[1],    // 分享地址
 			            "desc" : '原价699元，新生99元报名',   // 分享描述
 			            "title" : '暑假英文阅读戏剧表演营'   // 分享标题
@@ -311,8 +311,8 @@ body {
 .upload_btn{ position: absolute; top: 0; bottom: 0; left: 0; right: 0; opacity: 0;}
 .el-upload__tip, a.el-upload-list__item-name{ color: #c5744c !important;}
 .el-upload-list__item-name{ padding-left: 0.4rem;}
-
-.upload-box{ padding: 0.5rem 0;}
+.up-button{ position: relative; width: 2rem; left: 50%; transform:translate(-50%, 0);}
+.upload-box{ padding: 0.5rem 0 0.2rem;}
 /* .el-upload input{display: none} */
 
 .scene_list {

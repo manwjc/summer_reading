@@ -91,7 +91,7 @@
 	}
 </script>
 
-<style scope>
+<style scoped>
 html,
 body {
   height: 100%;
