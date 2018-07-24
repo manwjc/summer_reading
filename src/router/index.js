@@ -61,7 +61,7 @@ export default new Router({
       }
     },
     {
-      path: '/sceneCon',
+      path: '/sceneCon/:id',
       name: 'sceneCon',
       component: SceneCon,
       meta: {

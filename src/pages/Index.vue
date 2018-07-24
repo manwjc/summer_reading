@@ -37,7 +37,7 @@
 					self.userData = res.data;
 					if(self.userData.code === '0'){
 						if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
-							self.$router.push({name:"nameList"})
+							self.$router.push({name:"sceneList"})
 						}
 					}else{
 						self.$showMsg(self.userData.message);

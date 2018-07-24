@@ -22,8 +22,8 @@ Object.keys(filters).forEach(key => {
 	Vue.filter(key, filters[key])
 });
 
-import FastClick from 'fastclick'
-FastClick.attach(document.body);
+// import FastClick from 'fastclick'
+// FastClick.attach(document.body);
 
 // import store from './store/store.js'
 

@@ -7,23 +7,23 @@
 			<!-- <div class="video">
 				<video controls="controls" poster="static/images/page2_01.jpg" src="https://pic.ibaotu.com/00/43/09/17T888piCtVf.mp4"></video>
 			</div> -->
-			<div class="video relative">
+			<div v-show="!uploadVideo" class="video relative demo-upload">
 				<div class="relative">
 					<el-upload
 					class="upload-box center"
 					ref="upload"
 					type="post"
-					:action="importFileUrl"
+					action=""
 					:limit="1"
 					:file-list="fileList"
 					:upload-error="uploadError"
 					:before-upload="beforeUpload"
 					:auto-upload="false">
-					<el-button slot="trigger" size="small" type="primary">选取视频</el-button>
-					<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">开始上传</el-button>
+					<el-button class="select-file"  slot="trigger" size="small" type="primary"></el-button>
+					<el-button style="margin-left: 10px;margin-top:20px;" size="small" type="success" @click="submitUpload">开始上传</el-button>
 					<div slot="tip" class="el-upload__tip">只能上传mp4文件，且不超过100MB</div>
 					</el-upload>
-					<img @click.prevent src="static/images/page2_01.jpg">
+					<!--<img @click.prevent src="static/images/page2_01.jpg">-->
 
 				</div>
 
@@ -32,13 +32,17 @@
 
 我刚刚看了下，它是有一个自定义的change事件的，你直接<el-checkbox @change=”popup”>就行了 -->
 			</div>
+			<div v-show="uploadVideo" class="video" >
+				<video id="video" controls="controls" poster="static/images/page2_01.jpg" :src="uploadVideo"></video>
+			</div>
 		</div>
 		<img @click.prevent src="static/images/page2_04.jpg">
 		<div class="form_list01">
-			<div class="scene_list f22 bold mb10" :class="index % 2 === 1 ? 'minuleft20' : 'mleft20'" v-for="(item, index) in nameList">
+			<div @click="redirect(item,index)" class="scene_list f22 bold mb10" :class="[index % 2 === 1 ? 'minuleft20' : 'mleft20',classBg6_8]" v-for="(item, index) in nameList">
 				<div class="scene_name">{{item.name}}</div>
 			</div>
 		</div>
+		<audio id="audio" ></audio>
 		<img @click.prevent src="static/images/page1_04.jpg">
 		<!-- <div @click.prevent="showMask"><img @click.prevent src="../assets/images/p_c_06.jpg"></div> -->
 	</div>
@@ -48,6 +52,13 @@
 	import Vue from 'vue'
 	import Element from 'element-ui'
 	import 'element-ui/lib/theme-chalk/index.css'
+	import wx from 'weixin-js-sdk'
+	//import $ from 'zepto'
+	import showMessage from 'vue-show-message'
+	
+	Vue.use(showMessage, {
+		duration: 2000
+	})
 
 	Vue.use(Element)
 	
@@ -57,33 +68,92 @@
 				nameList: [
 						{
 							name: '“小剧场”剧本台词',
+							url : "",
 						},
 						{
 							name: '“小剧场”剧本录音',
+							url : "",
 						},
 						{
 							name: '“小剧场”作业',
+							url : "",
 						}
 					],
 				nameData: [],
 				maskShow: false,
 				importFileUrl: '/wx/chelApi/uploadVideo',
-				upLoadData: '153217813843359801501873',
+				upLoadData: '',
 				fileList: [],
+				uploadVideo : null,
+				mp3Url : "",
+				classBg6_8 : "",
+
 			}
 		},
 		mounted() {
 			let self = this;
+			let id = this.$route.params.id;
+			let isAge3_5 = sessionStorage.getItem("isAge3_5");//是否是3-5岁
+			if(isAge3_5 !== "true"){
+				self.classBg6_8 = "bg6_8";
+			}
+			self.getWxInfo();
 			//self.getNameList();
 			self.$axios.get('/wx/chelApi/getCoursewareList', {
 				params: {}
+			})
+			.then((res)=>{
+				if(res.data.code === '0'){
+					for(let i=0,len=res.data.data.length;i<len;i++){
+						if(res.data.data[i].id === id){
+							let matchData = res.data.data[i];
+							if(matchData){
+								console.log("matchData",matchData)
+								self.uploadVideo = matchData.uploadVideo;
+								self.upLoadData = matchData.id;
+								console.log("self.upLoadData",self.upLoadData)
+								self.nameList[2].url = "http://www.chel-c.com/" + matchData.homeworkUrl;
+								for(let i=0,len=matchData.coursewareUrlList.length;i<len;i++){
+									if(matchData.coursewareUrlList[i].coursewareUrl.substr(-4,4) === ".mp3" ){
+										self.nameList[1].url = matchData.coursewareUrlList[i].coursewareUrl;
+									}
+									else if(matchData.coursewareUrlList[i].coursewareUrl.substr(-4,4) === ".pdf"){
+										self.nameList[0].url = matchData.coursewareUrlList[i].coursewareUrl;
+									}
+								}
+								console.log("self.nameList",self.nameList)
+							}
+						}
+					}
+
+					
+
+				}
+			})
+			.catch((error) => {
+				alert(error)
 			})
 			/* self.$axios.post('/wx/chelApi/uploadVideo', {
 				params: {}
 			}) */
 		},
 		methods: { 
+			redirect(item,index){
+				let self = this;
+				console.log(item,index)
+				//let host = "https://www.chel-c.com/";
+				window.open(item.url);
+				/*if(index === 0 || index === 2){
+					window.location = item.url;
+				}
+				else if(index === 1){
+					let mp3Url = item.url;
+					document.getElementById("audio").src=mp3Url;
+					document.getElementById("audio").play();
+				}*/
+			},
 			getNameList() {
+
 				let self = this;
 
 				self.$axios.get('/wx/wxApi/recommendSignUp', {
@@ -111,9 +181,31 @@
 				let self = this;
 				let fd = new FormData()
 
+				if(!self.beforeAvatarUpload(file)){
+					return false;
+				}
+
 				fd.append('file', file)
 				fd.append('coursewareId',self.upLoadData)
+				//fd.file = file;
+				//fd.coursewareId = self.upLoadData;
 				self.$axios.post('/wx/chelApi/uploadVideo', fd, {})
+				.then((res)=>{
+					// alert(JSON.stringify(res))
+			        let data = res.data;
+			        console.log("upload",data)
+
+			        if(data.code === '0'){
+			        	let host = "https://www.chel-c.com/";
+			           self.uploadVideo =host + data.data.APPENDIX_URL;
+			           document.getElementById("#video").src = self.uploadVideo
+			           //$("#video").attr("src",self.uploadVideo)  ;
+			           document.getElementById("#video").play();
+			        }
+			    })
+			    .catch((error) => {
+			        console.log(error)
+			    })
 				return false;	//拦截默认提交
 			},
 			uploadSuccess (file) {
@@ -130,24 +222,75 @@
 				const extension = fileArr[fileLength - 1] === 'mp4';
 				const isLt2M = file.size / 1024 / 1024 < 100;
 				if (!extension) {
-					console.log('上传文件只能是 mp4 格式!')
+					this.$showMsg('上传文件只能是 mp4 格式!')
 				}
 				if (!isLt2M) {
-					console.log('上传文件大小不能超过 100MB!')
+					this.$showMsg('上传文件大小不能超过 100MB!')
 				}
 				return extension && isLt2M
 			},
 			handleRemove(file) {
 				console.log(file);
 			},
-			submitUpload() {
+			submitUpload(file) {
+				console.log(file)
 				this.$refs.upload.submit();
 			},
+			getWxInfo() {
+			    let self = this;
+
+			    self.$axios.get('/wx/wechat/portal/getWechatSign', {
+			        params: {currentUrl: location.href.split('#')[0]}
+			    })
+			    .then((res)=>{
+			        let data = res.data;
+			        if(data.code === '0'){
+			            self.wxInfo = data.data;
+			            self.wxShareInit();
+			        }
+			    })
+			    .catch((error) => {
+			        console.log(error)
+			    })
+			},
+			wxShareInit() {
+				let self = this;
+			    //配置微信信息
+			    wx.config ({
+			        debug : false,    // true:调试时候弹窗
+			        appId : self.wxInfo.appId, // 微信appid
+			        timestamp : self.wxInfo.timestamp, // 时间戳
+			        nonceStr : self.wxInfo.nonceStr, // 随机字符串
+			        signature : self.wxInfo.signature, // 签名
+			        jsApiList : [
+			            // 所有要调用的 API 都要加到这个列表中
+			            'onMenuShareTimeline',       // 分享到朋友圈接口
+			            'onMenuShareAppMessage',  //  分享到朋友接口
+			        ]
+			    });
+			    wx.ready (function () {
+			        // 微信分享的数据
+			        var shareData = {
+			            "imgUrl" : '../assets/share_img.jpg',    // 分享显示的缩略图地址
+			            "link" : location.href.split('#')[0]+'#'+location.href.split('#')[1],    // 分享地址
+			            "desc" : '原价699元，新生99元报名',   // 分享描述
+			            "title" : '暑假英文阅读戏剧表演营'   // 分享标题
+			        }
+			        wx.onMenuShareTimeline (shareData)
+			        wx.onMenuShareAppMessage (shareData)
+			    })
+			    wx.error(function(res){ 
+			        // config信息验证失败会执行error函数，如签名过期导致验证失败，
+			        // 具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，
+			        //对于SPA可以在这里更新签名。 
+			        //alert("好像出错了！！");
+			    });
+			}
 		}
 	}
 </script>
 
-<style scope>
+<style scoped>
 html,
 body {
   height: 100%;
@@ -165,7 +308,7 @@ body {
 .video{ height: 100%; margin: 0 0.7rem; overflow: hidden;}
 .video video{ width: 100%; object-fit: contain;}
 .upload_btn{ position: absolute; top: 0; bottom: 0; left: 0; right: 0; opacity: 0;}
-.el-upload__tip, .el-upload-list__item-name{ color: #c5744c !important;}
+.el-upload__tip, a.el-upload-list__item-name{ color: #c5744c !important;}
 .el-upload-list__item-name{ padding-left: 0.4rem;}
 
 .upload-box{ padding: 0.5rem 0;}
@@ -180,7 +323,19 @@ body {
   overflow: hidden;
   color: #ad2924;
 }
+.scene_list.bg6_8{
+	background: url(../assets/images/page2_list_bg2.jpg) no-repeat;
+	background-size: 100% 100%;
+}
 .scene_name{ margin: 0.4rem 0 0 2.4rem;}
 .scene_name5{ margin: 0.3rem 0 0 2.4rem;}
 .scene_name5 div{ margin-left: 0.6rem;}
+.select-file,.select-file:hover{
+	background: url(../assets/images/btn-upload.jpg) no-repeat;
+	width:4.82rem;
+	height:2.45rem;
+	background-size:100% 100%;
+	border:none;
+}
+
 </style>
