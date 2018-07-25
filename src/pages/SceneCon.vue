@@ -158,6 +158,8 @@
 					return false;
 				}
 
+				this.$showMsg('上传中，请稍候…');
+
 				fd.append('file', file)
 				fd.append('coursewareId',self.upLoadData)
 				//fd.file = file;
@@ -170,8 +172,10 @@
 			        if(data.code === '0'){
 			        	let host = "https://www.chel-c.com/";
 			            self.uploadVideo =host + data.data.APPENDIX_URL;
+						this.$showMsg('文件上传成功');
 			        }else{
-						this.$showMsg('上传失败!')
+						let message = data.message || '上传失败!';
+						this.$showMsg(message)
 					}
 			    })
 			    .catch((error) => {
@@ -242,7 +246,7 @@
 			        // 微信分享的数据
 			        var shareData = {
 			            "imgUrl" : self.shareImg,    // 分享显示的缩略图地址
-			            "link" : location.href.split('#')[0]+'#' + '/sceneShare?id=' + self.$route.params.id + '&shareFrom=' + self.userData.data.openId,    // 分享地址
+			            "link" : 'https://www.chel-c.com/wx/index?id=' + self.$route.params.id + '&shareFrom=' + self.userData.data.openId,    // 分享地址/* location.href.split('#')[0] +  */
 			            "desc" : '原价699元，新生99元报名',   // 分享描述
 			            "title" : '暑假英文阅读戏剧表演营'   // 分享标题
 			        }
