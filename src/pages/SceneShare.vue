@@ -11,7 +11,7 @@
 		<audio id="audio" ></audio>
 		<img @click.prevent src="static/images/scene_share_02.jpg">
 		<img @click.prevent src="static/images/scene_share_03.jpg">
-		<div @click.prevent="getUserInfo"><img @click.prevent src="static/images/scene_share_04.jpg"></div>
+		<div @click.prevent="JoinIn"><img @click.prevent src="static/images/scene_share_04.jpg"></div>
 		<img @click.prevent src="static/images/scene_share_05.jpg">
 		<img @click.prevent src="static/images/page1_04.jpg">
 	</div>
@@ -23,6 +23,7 @@
 	import Element from 'element-ui'
 	import 'element-ui/lib/theme-chalk/index.css'
 	import shareImg from '../assets/images/share_img.jpg'
+	import utils from '../js/common/utils'
 	import wx from 'weixin-js-sdk'
 	import showMessage from 'vue-show-message'
 	
@@ -42,14 +43,16 @@
 		},
 		mounted() {
 			let self = this;
-			self.getUserVideo();
+			self.getUserInfo();
 		},
 		methods: { 
 			getUserVideo() {
 				let self = this;
-				self.$axios.get('/wx/chelApi/getUserVideo').then((res)=>{
+				self.$axios.get('/wx/chelApi/getUserVideo', {
+					params: {id: self.$route.query.id, shareFrom: self.userData.data.openId}
+				}).then((res)=>{
 					if(res.data.code === '0'){
-						self.videoUrl = res.data.videoUrl;
+						self.videoUrl = utils.handleUrl(res.data.data.vidoUrl);
 					}else{
 						self.$showMsg(res.data.message);
 					}
@@ -59,18 +62,22 @@
 				let self = this;
 				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
 					self.userData = res.data;
-					if(self.userData.code === '0'){
-						if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
-							self.$router.push({name:"sceneList"})
-						}else if(self.userData.data && self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === false){
-							self.$router.push({name:"newGay"})
-						}else if(self.userData.data && self.userData.data.isBindPhone === false){
-							self.$router.push({name:"checkPhone"})
-						}
-					}else{
-						self.$showMsg(self.userData.message);
-					}
+					self.getUserVideo();
 				})
+			},
+			JoinIn() {
+				let self = this;
+				if(self.userData.code === '0'){
+					if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
+						self.$router.push({name:"sceneList"})
+					}else if(self.userData.data && self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === false){
+						self.$router.push({name:"newGay"})
+					}else if(self.userData.data && self.userData.data.isBindPhone === false){
+						self.$router.push({name:"checkPhone"})
+					}
+				}else{
+					self.$showMsg(self.userData.message);
+				}
 			},
 			getWxInfo() {
 			    let self = this;

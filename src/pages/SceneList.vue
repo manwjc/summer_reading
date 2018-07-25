@@ -152,6 +152,7 @@ body {
 .form_list01 {
   background: #fcf6e8;
   padding-bottom: 0.15rem; 
+  overflow:hidden;
 }
 .scene_list {
   background: url(../assets/images/page1_02.jpg) no-repeat;

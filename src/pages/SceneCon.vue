@@ -1,12 +1,8 @@
 <template>
 	<div class="relative">
-		<div class="mask" v-show="maskShow" @click="hideMask"><img @click.prevent src="../assets/images/toShare.png"></div>
 		<img @click.prevent src="static/images/page2_01.jpg">
 		<img @click.prevent src="static/images/page2_02.jpg">
 		<div class="video_box">
-			<!-- <div class="video">
-				<video controls="controls" poster="static/images/page2_01.jpg" src="https://pic.ibaotu.com/00/43/09/17T888piCtVf.mp4"></video>
-			</div> -->
 			<div v-show="!uploadVideo" class="video relative demo-upload">
 				<div class="relative">
 					<el-upload
@@ -25,12 +21,8 @@
 					</el-upload>
 					<el-button class="up-button" size="small" type="success" @click="submitUpload">开始上传</el-button>
 					<!--<img @click.prevent src="static/images/page2_01.jpg">-->
-
 				</div>
-
-
 				<!-- 你可以得到event对象，然后判断来源，从而只做一次事件处理，但是事件还是触发了两次。一般这种组件都有封装好的自定义事件吧，就是为了不让你使用click.native的，你可以看看文档
-
 我刚刚看了下，它是有一个自定义的change事件的，你直接<el-checkbox @change=”popup”>就行了 -->
 			</div>
 			<div v-show="uploadVideo" class="video" >
@@ -45,7 +37,6 @@
 		</div>
 		<audio id="audio" ></audio>
 		<img @click.prevent src="static/images/page1_04.jpg">
-		<!-- <div @click.prevent="showMask"><img @click.prevent src="../assets/images/p_c_06.jpg"></div> -->
 	</div>
 </template>
 
@@ -55,7 +46,6 @@
 	import 'element-ui/lib/theme-chalk/index.css'
 	import shareImg from '../assets/images/share_img.jpg'
 	import wx from 'weixin-js-sdk'
-	//import $ from 'zepto'
 	import showMessage from 'vue-show-message'
 	
 	Vue.use(showMessage, {
@@ -87,6 +77,7 @@
 				upLoadData: '',
 				fileList: [],
 				uploadVideo : null,
+				userData: null,
 				mp3Url : "",
 				classBg6_8 : "",
 				shareImg: "https://www.chel-c.com/wx/" + shareImg
@@ -102,7 +93,7 @@
 			}
 
 			self.getWxInfo();
-			//self.getNameList();
+			self.getUserInfo();
 			self.$axios.get('/wx/chelApi/getCoursewareList', {
 				params: {}
 			})
@@ -137,11 +128,14 @@
 			.catch((error) => {
 				alert(error)
 			})
-			/* self.$axios.post('/wx/chelApi/uploadVideo', {
-				params: {}
-			}) */
 		},
 		methods: { 
+			getUserInfo() {
+				let self = this;
+				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
+					self.userData = res.data;
+				})
+			},
 			redirect(item,index){
 				let self = this;
 				console.log(item,index)
@@ -155,31 +149,6 @@
 					document.getElementById("audio").src=mp3Url;
 					document.getElementById("audio").play();
 				}*/
-			},
-			getNameList() {
-
-				let self = this;
-
-				self.$axios.get('/wx/wxApi/recommendSignUp', {
-					params: {}
-				})
-				.then((res)=>{
-					if(res.data.code === '0'){
-						self.nameData = res.data.data;
-					}
-				})
-				.catch((error) => {
-					alert(error)
-				})
-			},
-			showMask() {
-				this.maskShow = true;
-				document.body.scrollTop = 0;
-				document.body.style = 'overflow: hidden';
-			},
-			hideMask() {
-				this.maskShow = false;
-				document.body.style = 'overflow: inherit';
 			},
 			beforeUpload (file) {
 				let self = this;
@@ -273,7 +242,7 @@
 			        // 微信分享的数据
 			        var shareData = {
 			            "imgUrl" : self.shareImg,    // 分享显示的缩略图地址
-			            "link" : location.href.split('#')[0]+'#'+location.href.split('#')[1],    // 分享地址
+			            "link" : location.href.split('#')[0]+'#' + '/sceneShare?id=' + self.$route.params.id + '&shareFrom=' + self.userData.data.openId,    // 分享地址
 			            "desc" : '原价699元，新生99元报名',   // 分享描述
 			            "title" : '暑假英文阅读戏剧表演营'   // 分享标题
 			        }
@@ -300,6 +269,7 @@ body {
 .form_list01 {
   background: #fcf6e8;
   padding-bottom: 0.15rem; 
+  overflow:hidden;
 }
 .video_box {
   background: url(../assets/images/video_bg.jpg) repeat-y;

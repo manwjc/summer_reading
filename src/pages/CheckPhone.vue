@@ -67,7 +67,11 @@
 				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
 					let data = res.data;
 					if(data.code === '0'){
-						self.$router.push({name:"newGay"})
+						if(data.data && data.data.isBindPhone === true && data.data.isBuyUser === true){
+							self.$router.push({name:"sceneList"})
+						}else if(data.data && data.data.isBindPhone === true && data.data.isBuyUser === false){
+							self.$router.push({name:"newGay"})
+						}
 					}else{
 						self.$showMsg(data.message);
 					}

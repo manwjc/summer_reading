@@ -80,7 +80,7 @@ export default new Router({
       }
     },
     {
-      path: '/sceneShare/:id',
+      path: '/sceneShare',
       name: 'sceneShare',
       component: SceneShare,
       meta: {
