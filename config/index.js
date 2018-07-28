@@ -32,8 +32,8 @@ module.exports = {
       
       //统一替换baseapi
       '/baseApi': {
-        // target: 'http://192.168.1.117',
-      	target: 'https://www.chel-c.com',
+        target: 'http://linden.imwork.net:16903',
+      	// target: 'https://www.chel-c.com',
       	changeOrigin: true,
       	pathRewrite: {
       		'^/baseApi': ''

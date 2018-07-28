@@ -104,7 +104,6 @@
 						let min = self.format(date,"mm");
 						let s = self.format(date,"ss");
 						let currentDate = y + "-" + m + "-" + d + " " + h + ":" + min + ":" + s;
-						console.log(currentDate)
 						if(self.listData.length){
 							self.topImg = self.listData[0].id === "153215547923659801807438" ? "static/images/page1_01.jpg" : "static/images/page1_02.jpg";
 							if(self.listData[0].id === "153215547923659801807438"){
@@ -121,9 +120,6 @@
 
 							}
 						}
-						console.log(self.listData)
-						
-
 					}
 				})
 				.catch((error) => {

@@ -8,6 +8,7 @@
 		<img @click.prevent src="../assets/images/p_a_05.jpg">
 		<div @click.prevent="joinIn"><img src="../assets/images/p_a_06.jpg"></div>
 		<img @click.prevent src="../assets/images/p_a_07.jpg">
+		<img @click.prevent src="../assets/images/p_a_08.jpg">
 	</div>
 </template>
 
@@ -27,7 +28,6 @@
 			}
 		},
 		mounted() {
-			console.log(process.env.NODE_ENV);
 			this.getUserInfo();
 		},
 		methods: { 

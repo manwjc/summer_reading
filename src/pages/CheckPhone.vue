@@ -1,7 +1,7 @@
 <template>
 	<div class="relative">
 		<img @click.prevent src="../assets/images/p_a_01.jpg">
-		<img @click.prevent src="../assets/images/p_a_02.jpg">
+		<img @click.prevent src="../assets/images/p_b_02.jpg">
 		<img @click.prevent src="../assets/images/p_b_03.jpg">
 		<div class="form_list">
 			<div class="form_box">
@@ -26,6 +26,7 @@
 		</div>
 		<div @click="submitForm"><img @click.prevent src="../assets/images/p_b_06.jpg"></div>
 		<img @click.prevent src="../assets/images/p_a_07.jpg">
+		<img @click.prevent src="../assets/images/p_a_08.jpg">
 	</div>
 </template>
 
@@ -52,7 +53,6 @@
 			}
 		},
 		mounted() {
-			console.log(process.env.NODE_ENV);
 			if(process.env.NODE_ENV === 'development'){
 				this.login();
 			}

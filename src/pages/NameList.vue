@@ -2,10 +2,11 @@
 	<div class="relative">
 		<div class="mask" v-show="maskShow" @click="hideMask"><img @click.prevent src="../assets/images/toShare.png"></div>
 		<img @click.prevent src="../assets/images/p_a_01.jpg">
-		<img @click.prevent src="../assets/images/p_a_02.jpg">
+		<img @click.prevent src="../assets/images/p_b_02.jpg">
 		<img @click.prevent src="../assets/images/p_b_03.jpg">
+		<img @click.prevent src="../assets/images/p_c_02.jpg">
+		<img @click.prevent src="../assets/images/p_c_03.jpg">
 		<img @click.prevent src="../assets/images/p_c_04.jpg">
-		<img @click.prevent src="../assets/images/p_c_05.jpg">
 		<div class="form_list01">
 			<div class="form_box f30">
 				<div class="displaybox mb10" v-for="(item, index) in nameData">
@@ -18,8 +19,9 @@
 			</div>
 		</div>
 		<div v-if="nameData && nameData.length > 2" @click.prevent="showMask"><img @click.prevent src="../assets/images/successed.jpg"></div>
-		<div v-else @click.prevent="showMask"><img @click.prevent src="../assets/images/p_c_06.jpg"></div>
+		<div v-else @click.prevent="showMask"><img @click.prevent src="../assets/images/p_c_05.jpg"></div>
 		<img @click.prevent src="../assets/images/p_a_07.jpg">
+		<img @click.prevent src="../assets/images/p_a_08.jpg">
 	</div>
 </template>
 
