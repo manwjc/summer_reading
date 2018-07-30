@@ -17,6 +17,7 @@
 					<span class="w50 right">已报名</span>
 				</div>
 			</div>
+			<div class="center f30" v-if="isBuyUser">恭喜！您已报名成功！</div>
 		</div>
 		<div v-if="nameData && nameData.length > 2" @click.prevent="showMask"><img @click.prevent src="../assets/images/successed.jpg"></div>
 		<div v-else @click.prevent="showMask"><img @click.prevent src="../assets/images/p_c_05.jpg"></div>
@@ -57,14 +58,29 @@
 						}
 					],
 				nameData: [],
-				maskShow: false
+				maskShow: false,
+				isBuyUser: false
 			}
 		},
 		mounted() {
 			let self = this;
 			self.getNameList();
+			self.getUserData();
 		},
 		methods: { 
+			getUserData() {
+				let self = this;
+				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
+					self.userData = res.data;
+					if(self.userData.code === '0'){
+						if(self.userData.data.isBuyUser === true){
+							self.isBuyUser = true;
+						}
+					}else{
+						self.$showMsg(self.userData.message);
+					}
+				})
+			},
 			getNameList() {
 				let self = this;
 

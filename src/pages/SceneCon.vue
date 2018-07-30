@@ -44,9 +44,11 @@
 	import Vue from 'vue'
 	import Element from 'element-ui'
 	import 'element-ui/lib/theme-chalk/index.css'
+	
 	import shareImg from '../assets/images/share_img.jpg'
 	import wx from 'weixin-js-sdk'
 	import mixin from '../js/common/wxshare_mixin'
+
 	import showMessage from 'vue-show-message'
 	
 	Vue.use(showMessage, {
@@ -74,7 +76,6 @@
 					],
 				nameData: [],
 				maskShow: false,
-				importFileUrl: '/wx/chelApi/uploadVideo',
 				upLoadData: '',
 				fileList: [],
 				uploadVideo : null,
