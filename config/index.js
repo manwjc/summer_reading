@@ -32,8 +32,8 @@ module.exports = {
       
       //统一替换baseapi
       '/baseApi': {
-        target: 'http://linden.imwork.net:16903',
-      	// target: 'https://www.chel-c.com',
+        // target: 'http://linden.imwork.net:16903',
+      	target: 'https://www.chel-c.com',
       	changeOrigin: true,
       	pathRewrite: {
       		'^/baseApi': ''
@@ -42,7 +42,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '192.168.0.103', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

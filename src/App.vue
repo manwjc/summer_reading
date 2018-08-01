@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <div style="display:none"><img :src="shareImg01" /></div>
     <router-view></router-view>
   </div>
 </template>
@@ -243,6 +242,7 @@
   }
 
   .wp100{ width: 100%;}
+  .heightp100{ height: 100%;}
   
   .displaybox {
     display: -moz-flex;
@@ -316,4 +316,6 @@
     
   .mask{ width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); position: absolute; z-index: 999;}
   .mask img{ width: 100%;}
+
+  .message{ width: 3.6rem !important; height: 0.8rem !important;}
 </style>

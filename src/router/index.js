@@ -14,6 +14,8 @@ const SceneCon = resolve => require(['../pages/SceneCon'], resolve)
 const SceneLastDay = resolve => require(['../pages/SceneLastDay'], resolve)
 const SceneShare = resolve => require(['../pages/SceneShare'], resolve)
 
+const OpeningActivity = resolve => require(['../pages/OpeningActivity'], resolve)
+
 export default new Router({
   routes: [
     {
@@ -86,6 +88,15 @@ export default new Router({
       meta: {
         keepAlive: true,
         title: '乔希“小剧场”阅读表演营'
+      }
+    },
+    {
+      path: '/openingActivity',
+      name: 'openingActivity',
+      component: OpeningActivity,
+      meta: {
+        keepAlive: true,
+        title: '乔希家的书开业特权'
       }
     }
   ]

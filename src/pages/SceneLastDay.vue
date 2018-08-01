@@ -63,7 +63,7 @@
 			        // 微信分享的数据
 			        var shareData = {
 			            "imgUrl" : self.shareImg,    // 分享显示的缩略图地址
-			            "link" : 'https://www.chel-c.com/wx/index?sharePage=sceneLastDay&openId=' + self.userData.data.openId,    // 分享地址/* location.href.split('#')[0] +  */
+			            "link" : 'https://www.chel-c.com/wx/index?sharePage=sceneLastDay&shareFrom=' + self.userData.data.openId,    // 分享地址/* location.href.split('#')[0] +  */
 			            "desc" : '原价699元，新生99元报名',   // 分享描述
 			            "title" : '暑假英文阅读戏剧表演营'   // 分享标题
 			        }

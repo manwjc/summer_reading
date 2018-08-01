@@ -12,14 +12,14 @@
 					</p>
 					<p class="displaybox">
 						<label class="label_name" for="userAge">宝贝年龄</label><span>：</span>
-						<input class="input_normal boxflex01" type="text" name="userAge" v-model="userAge">
+						<input class="input_normal boxflex01" type="number" name="userAge" v-model.number="userAge" @change="getTermNumList">
 					</p>
 					<p class="displaybox">
 						<label class="label_name" for="defaultRoom">阅读馆</label><span>：</span>
-						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" v-if="userData && userData.data && userData.data.utmSource === 'cmb'" >
+						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" @change="getTermNumList" v-if="userData && userData.data && userData.data.utmSource === 'cmb'" >
 							<option v-for="(item,index) in readingRooms"  :value="index+1" v-if="index < 5">{{ item.name }}</option>
 						</select>
-						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" v-else >
+						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" @change="getTermNumList" v-else >
 							<option v-for="(item,index) in readingRooms"  :value="index+1">{{ item.name }}</option>
 						</select>
 
@@ -63,7 +63,7 @@
 		data() {
 			return {
 				readingRooms: [
-					{name: '深圳太古城阅读馆'},
+					/* {name: '深圳太古城阅读馆'},
 					{name: '深圳华润城阅读馆'},
 					{name: '深圳Cococity阅读馆'},
 					{name: '深圳喜荟城阅读馆'},
@@ -71,11 +71,11 @@
 					{name: '梅州万达阅读馆'},
 					{name: '成都九方阅读馆'},
 					{name: '宁波银泰城阅读馆'},
-					{name: '杭州新天地阅读馆'},
+					{name: '杭州新天地阅读馆'}, */
 				],
 				defaultRoom: 1,
 				termList: [],
-				//3-5岁
+				/* //3-5岁
 				termList01: [
 					// {time: '第一期 7月24日-7月28日 10:15-11:00'},
 					// {time: '第一期 7月24日-7月28日 15:15-16:00'},
@@ -104,18 +104,17 @@
 					{time: '第四期 8月14日-8月18日 11:15-12:00'},
 					{time: '第五期 8月21日-8月25日 10:15-11:00'},
 					{time: '第五期 8月21日-8月25日 11:15-12:00'},
-				],
+				], */
 				defaultTerm: 1,
 				partNum: '',
 				userName: '',
-				// mobile: '',
-				// code: '',
 				userAge: '',
 				userData: null
 			}
 		},
 		mounted() {
 			this.getUserData();
+			this.getReadRoomList();
 		},
 		methods: { 
 			submitForm() {
@@ -133,8 +132,6 @@
 						age:self.userAge,
 						readRoomName:self.readingRooms[self.defaultRoom-1].name,
 						termNum:self.termList[self.defaultTerm-1].time,
-						// signMobile:self.mobile,
-						// validateCode:self.code
 					})
 
 				self.$axios.get('/wx/wxApi/getTermNum', {
@@ -182,8 +179,6 @@
                         {name:'userAge', reg:Valid.validateAge},
                         {name:'defaultRoom'},
                         {name:'defaultTerm'},
-                        // {name:'mobile', reg:Valid.validateMobile},
-                        // {name:'code'}
                     ],
                     message;
                 var messages = {
@@ -191,8 +186,6 @@
                     userAge: {require: '宝贝年龄不能为空', regex: '年龄为1-3位整数'},
                     defaultRoom: {require: '阅读馆不能为空'},
                     defaultTerm: {require: '期数不能为空'},
-                    // mobile: {require: '手机号不能为空', regex: '手机号不合法，请重新输入'},
-                    // code: {require: '验证码不能为空', regex: '验证码不正确，请重新输入'}
                 };
 
                 for (var i = 0; i < names.length; i++) {
@@ -241,7 +234,6 @@
 			},
 			toPay(obj) {
 				let self = this;
-				// alert("appId：" + obj.appid+"timeStamp："+obj.timeStamp+"nonceStr："+obj.nonceStr+"package："+'prepay_id=' + obj.prepayId+"signType："+obj.signType+"paySign："+obj.sign  );
 				WeixinJSBridge.invoke('getBrandWCPayRequest',{  
 					"appId":obj.appid,                 //公众号名称，由商户传入  
 					"timeStamp":obj.timeStamp,          //时间戳，自 1970 年以来的秒数  
@@ -264,10 +256,56 @@
 				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
 					self.userData = res.data;
 				})
+			},
+			getReadRoomList() {
+				let self = this;
+				self.$axios.get('/wx/chelApi/getReadRoomList').then((res)=>{
+					if(res.data.code === '0'){
+						let arr = res.data.data;
+						self.readingRooms = arr.map(function(val){
+							var obj = {};
+							obj.name = val;
+							return obj;
+						})
+					}else{
+						self.$showMsg(res.data.message);
+					}
+				})
+			},
+			getTermNumList() {
+				let self = this, dataParams;
+
+				if(!self.userAge){
+					self.$showMsg('请填写宝贝年龄');
+					return;
+				}
+				self.termList = [];
+
+				dataParams = {
+					age:self.userAge,
+					readRoomName:self.readingRooms[self.defaultRoom-1].name
+				}
+				
+				self.$axios.get('/wx/chelApi/getTermNumList', {
+					params: dataParams
+				})
+				.then((res)=>{
+					if(res.data.code === '0'){
+						let arr = res.data.data, termListData;
+						termListData = arr.map(function(val){
+							var obj = {};
+							obj.time = val;
+							return obj;
+						})
+						self.termList = termListData;
+					}else{
+						self.$showMsg(res.data.message);
+					}
+				})
 			}
 
 		},
-		watch: {
+		/* watch: {
 			userAge(val){
 				let self = this;
 				if(val && val*1 < 6){
@@ -276,7 +314,7 @@
 					self.termList = self.termList02;
 				}
 　　　　　　 },
-		}
+		} */
 	}
 </script>
 

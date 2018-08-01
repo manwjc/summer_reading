@@ -36,7 +36,6 @@
 	})
 
 	export default {
-		name: 'applyFormNew',
 		data() {
 			return {
 				nameList: [
