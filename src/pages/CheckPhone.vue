@@ -32,7 +32,8 @@
 
 <script>
 	import Vue from 'vue'
-	import Valid from '../js/common/validate'
+	import service from '@/js/service'
+	import Valid from '@/js/common/validate'
 	import showMessage from 'vue-show-message'
 	
 	Vue.use(showMessage, {
@@ -53,18 +54,12 @@
 			}
 		},
 		mounted() {
-			if(process.env.NODE_ENV === 'development'){
-				this.login();
-			}
+			
 		},
 		methods: { 
-			login() {
-				let self = this;
-				self.$axios.get('wx/login')
-			},
 			getUserInfo() {
 				let self = this;
-				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
+				service.getUserInfo((res)=>{
 					let data = res.data;
 					if(data.code === '0'){
 						if(data.data && data.data.isBindPhone === true && data.data.isBuyUser === true){
@@ -75,6 +70,8 @@
 					}else{
 						self.$showMsg(data.message);
 					}
+				}, (error) => {
+					self.$showMsg(error)
 				})
 			},
 			submitForm() {
@@ -90,20 +87,14 @@
 					return;
 				}
 
-				self.$axios({
-					method: "post",
-					url: "/wx/wxApi/bindMobile",
-					data: dataParams
-				})
-				.then((res)=>{
+				service.bindMobile(dataParams, (res)=>{
 					if(res.data.code === '0'){
-						this.getUserInfo();
+						self.getUserInfo();
 					}else{
 						self.$showMsg(res.data.message);
 					}
-				})
-				.catch((error) => {
-					console.log(typeof error)
+				}, (error) => {
+					self.$showMsg(error)
 				})
 			},
 			validateResult:function () {
@@ -149,18 +140,13 @@
 				}
 
 				self.$showMsg('验证码已发送');
-				self.$axios.get('/wx/wxApi/sendValidateCode', {
-					params: dataParams
-				})
-				.then((res)=>{
+				service.sendValidateCode(dataParams, (res)=>{
 					var validCode = res.data.data;
 					if(validCode){
 						self.code = validCode;
 					}
-				})
-				.catch((error) => {
-					self.$showMsg('网络较慢，请稍候重试');
-					console.log(error)
+				}, (error) => {
+					self.$showMsg(error)
 				})
 			}
 

@@ -14,6 +14,7 @@
 
 <script>
 	import Vue from 'vue'
+	import service from '@/js/service'
 	import showMessage from 'vue-show-message'
 	
 	Vue.use(showMessage, {
@@ -28,21 +29,40 @@
 			}
 		},
 		mounted() {
-			this.getUserInfo();
+			let self = this;
+			if(process.env.NODE_ENV === 'development'){
+				self.login();
+			}
+			self.getUserInfo();
 		},
 		methods: { 
+			login() {
+				let self = this;
+				self.$axios.get('/wx/login')
+			},
 			getUserInfo() {
 				let self = this;
-				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
-					self.userData = res.data;
-					if(self.userData.code === '0'){
-						if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
-							self.$router.push({name:"sceneList"})
-						}
-					}else{
-						self.$showMsg(self.userData.message);
+				if(self.$store.state.userData !== null){
+					self.userData = self.$store.state.userData;
+					self.goToRouter(self.userData);
+				}else{
+					service.getUserInfo((res)=>{
+						self.userData = res.data;
+						self.goToRouter(self.userData);
+					}, (error) => {
+						self.$showMsg(error)
+					})
+				}
+			},
+			goToRouter(userData){
+				let self = this;
+				if(userData.code === '0'){
+					if(userData.data.isBindPhone === true && userData.data.isBuyUser === true){
+						self.$router.push({name:"sceneList"})
 					}
-				})
+				}else{
+					self.$showMsg(userData.message);
+				}
 			},
 			joinIn() {
 				let self = this;

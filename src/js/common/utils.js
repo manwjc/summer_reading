@@ -1,6 +1,6 @@
     
 export default {
-    //验证手机号
+    //relative link to absolute link
     handleUrl: function(str){
         if(!str){
             str = '';

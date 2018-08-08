@@ -42,12 +42,13 @@
 
 <script>
 	import Vue from 'vue'
+	import service from '@/js/service'
 	import Element from 'element-ui'
 	import 'element-ui/lib/theme-chalk/index.css'
 	
-	import shareImg from '../assets/images/share_img.jpg'
+	import shareImg from '@/assets/images/share_img.jpg'
 	import wx from 'weixin-js-sdk'
-	import mixin from '../js/common/wxshare_mixin'
+	import mixin from '@/js/common/wxshare_mixin'
 
 	import showMessage from 'vue-show-message'
 	

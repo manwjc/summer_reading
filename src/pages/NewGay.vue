@@ -113,7 +113,7 @@
 			}
 		},
 		mounted() {
-			this.getUserData();
+			this.getUserInfo();
 			this.getReadRoomList();
 		},
 		methods: { 
@@ -251,7 +251,7 @@
 					}  
 				});
 			},
-			getUserData() {
+			getUserInfo() {
 				let self = this;
 				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
 					self.userData = res.data;

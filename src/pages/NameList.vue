@@ -28,7 +28,8 @@
 
 <script>
 	import Vue from 'vue'
-	import headImg from '../assets/images/head-img.jpg'
+	import service from '@/js/service'
+	import headImg from '@/assets/images/head-img.jpg'
 	import showMessage from 'vue-show-message'
 	
 	Vue.use(showMessage, {
@@ -64,12 +65,12 @@
 		mounted() {
 			let self = this;
 			self.getNameList();
-			self.getUserData();
+			self.getUserInfo();
 		},
 		methods: { 
-			getUserData() {
+			getUserInfo() {
 				let self = this;
-				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
+				service.getUserInfo((res)=>{
 					self.userData = res.data;
 					if(self.userData.code === '0'){
 						if(self.userData.data.isBuyUser === true){
@@ -78,6 +79,8 @@
 					}else{
 						self.$showMsg(self.userData.message);
 					}
+				}, (error) => {
+					self.$showMsg(error)
 				})
 			},
 			getNameList() {
