@@ -32,6 +32,20 @@
 	export default {
 		data() {
 			return {
+				nameList: [
+					{
+						pic: '',
+						userName: 'jerry'
+					},
+					{
+						pic: '',
+						userName: 'jerry'
+					},
+					{
+						pic: '',
+						userName: 'jerry'
+					},
+				],
 				nameData: [],
 				maskShow: false,
 				isBuyUser: false

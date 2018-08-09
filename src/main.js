@@ -24,7 +24,7 @@ if(process.env.NODE_ENV === 'development'){
 Vue.prototype.$axios = axios
 // Object.defineProperties(Vue.prototype, '$axios', {value: axios})
 
-import * as filters from './js/common/filters'
+import filters from './js/common/filters'
 Object.keys(filters).forEach(key => {
 	Vue.filter(key, filters[key])
 });
