@@ -31,7 +31,7 @@
 		</div>
 		<img @click.prevent src="static/images/page2_04.jpg">
 		<div class="form_list01">
-			<div @click="redirect(item)" class="scene_list f22 bold mb10" :class="[index % 2 === 1 ? 'minuleft20' : 'mleft20',classBg6_8]" v-for="(item, index) in nameList">
+			<div @click="redirect(item)" class="scene_list f22 bold mb10" :class="[index % 2 === 1 ? 'minuleft20' : 'mleft20',classBg6_8]" v-for="(item, index) in listData">
 				<div class="scene_name">{{item.name}}</div>
 			</div>
 		</div>
@@ -42,7 +42,7 @@
 
 <script>
 	import Vue from 'vue'
-	import service from '@/js/service'
+	import constant from '@/js/common/constant'
 	import Element from 'element-ui'
 	import 'element-ui/lib/theme-chalk/index.css'
 	
@@ -50,18 +50,12 @@
 	import wx from 'weixin-js-sdk'
 	import mixin from '@/js/common/wxshare_mixin'
 
-	import showMessage from 'vue-show-message'
-	
-	Vue.use(showMessage, {
-		duration: 2000
-	})
-
 	Vue.use(Element)
 	
 	export default {
 		data() {
 			return {
-				nameList: [
+				listData: [
 						{
 							name: '“小剧场”剧本台词',
 							url : "",
@@ -75,7 +69,6 @@
 							url : "",
 						}
 					],
-				nameData: [],
 				maskShow: false,
 				upLoadData: '',
 				fileList: [],
@@ -83,11 +76,12 @@
 				userData: null,
 				mp3Url : "",
 				classBg6_8 : "",
-				shareImg: "https://www.chel-c.com/wx/" + shareImg
+				shareImg: constant.chelchost + "/wx/" + shareImg
 
 			}
 		},
 		mounted() {
+			console.log('get to scene')
 			let self = this;
 			let id = this.$route.params.id;
 			let isAge3_5 = sessionStorage.getItem("isAge3_5");//是否是3-5岁
@@ -96,10 +90,7 @@
 			}
 
 			self.getUserInfo();
-			self.$axios.get('/wx/chelApi/getCoursewareList', {
-				params: {}
-			})
-			.then((res)=>{
+			self.$service.getCoursewareList((res)=>{
 				if(res.data.code === '0'){
 					for(let i=0,len=res.data.data.length;i<len;i++){
 						if(res.data.data[i].id === id){
@@ -107,13 +98,13 @@
 							if(matchData){
 								self.uploadVideo = matchData.uploadVideo;
 								self.upLoadData = matchData.id;
-								self.nameList[2].url = "https://www.chel-c.com/" + matchData.homeworkUrl;
+								self.listData[2].url = constant.chelchost + matchData.homeworkUrl;
 								for(let i=0,len=matchData.coursewareUrlList.length;i<len;i++){
 									if(matchData.coursewareUrlList[i].coursewareUrl.substr(-4,4) === ".mp3" ){
-										self.nameList[1].url = matchData.coursewareUrlList[i].coursewareUrl;
+										self.listData[1].url = matchData.coursewareUrlList[i].coursewareUrl;
 									}
 									else if(matchData.coursewareUrlList[i].coursewareUrl.substr(-4,4) === ".pdf"){
-										self.nameList[0].url = matchData.coursewareUrlList[i].coursewareUrl;
+										self.listData[0].url = matchData.coursewareUrlList[i].coursewareUrl;
 									}
 								}
 							}
@@ -123,8 +114,7 @@
 					
 
 				}
-			})
-			.catch((error) => {
+			}, (error) => {
 				alert(error)
 			})
 		},
@@ -146,21 +136,19 @@
 
 				fd.append('file', file)
 				fd.append('coursewareId',self.upLoadData)
-				self.$axios.post('/wx/chelApi/uploadVideo', fd, {})
-				.then((res)=>{
+				self.$service.uploadVideo(fd, (res)=>{
 					// alert(JSON.stringify(res))
 			        let data = res.data;
 
 			        if(data.code === '0'){
-			        	let host = "https://www.chel-c.com/";
+			        	let host = constant.chelchost;
 			            self.uploadVideo =host + data.data.APPENDIX_URL;
 						this.$showMsg('文件上传成功');
 			        }else{
 						let message = data.message || '上传失败!';
 						this.$showMsg(message)
 					}
-			    })
-			    .catch((error) => {
+			    }, (error) => {
 			        alert(error)
 			    })
 				return false;	//拦截默认提交
@@ -186,19 +174,17 @@
 				}
 				return isLt2M
 			},
-			handleRemove(file) {
-				console.log(file);
-			},
 			submitUpload() {
 				this.$refs.upload.submit();
 			},
 			setShareData() {
 				let self = this;
+            	let openId = self.userData.data && self.userData.data !== null ? self.userData.data.openId : '';
 				wx.ready (function () {
 			        // 微信分享的数据
 			        var shareData = {
 			            "imgUrl" : self.shareImg,    // 分享显示的缩略图地址
-			            "link" : 'https://www.chel-c.com/wx/index?id=' + self.$route.params.id + '&shareFrom=' + self.userData.data.openId,    // 分享地址
+			            "link" : constant.chelchost + '/wx/index?id=' + self.$route.params.id + '&shareFrom=' + openId,    // 分享地址
 			            "desc" : '原价699元，新生99元报名',   // 分享描述
 			            "title" : '暑假英文阅读戏剧表演营'   // 分享标题
 			        }

@@ -1,6 +1,3 @@
-    
-
-
 import shareImg from '@/assets/images/share_img.jpg'
 import wx from 'weixin-js-sdk'
 import api from '@/js/api'
@@ -12,24 +9,36 @@ export default {
       };
     },
     methods: { 
-        getUserInfo() {
+        getUserInfo(callback) {
             let self = this;
-            service.getUserInfo((res)=>{
-                self.userData = self.$store.state.userData = res.data;
+            let stateUserData = self.$store.state.userData;
+            if(stateUserData !== null){
+                self.userData = self.$store.state.userData
                 self.getWxInfo();
-            })
+                callback && callback();
+            }else{
+                service.getUserInfo((res)=>{
+                    self.userData = self.$store.state.userData = res.data;
+                    self.getWxInfo();
+                    callback && callback();
+                })
+            }
         },
         getWxInfo() {
             let self = this;
-            service.getWechatSign({
-                params: {url: location.href.split('#')[0]}
-            }, (res) => {
-                let data = res.data;
-                if(data.code === '0'){
-                    self.wxInfo = data.data;
-                    self.wxShareInit();
-                }
-            })
+            if(self.$store.state.wxInfo !== null){
+                self.wxShareInit();
+            }else{
+                service.getWechatSign({
+                    params: {url: location.href.split('#')[0]}
+                }, (res) => {
+                    let data = res.data;
+                    if(data.code === '0'){
+                        self.wxInfo = self.$store.state.wxInfo = data.data;
+                        self.wxShareInit();
+                    }
+                })
+            }
         },
         wxShareInit(shareData) {
             let self = this;
@@ -56,11 +65,12 @@ export default {
         },
         setShareData() {
             let self = this;
+            let openId = self.userData.data && self.userData.data !== null ? self.userData.data.openId : '';
             wx.ready (function () {
                 // 微信分享的数据
                 var shareData = {
                     "imgUrl" : self.shareImg,    // 分享显示的缩略图地址
-                    "link" : 'https://www.chel-c.com/wx/index?sharePage=' + self.$route.path === '/' ? '' : self.$route.path + '&shareFrom=' + self.userData.data && self.userData.data !== null ? self.userData.data.openId : '',    // 分享地址/* location.href.split('#')[0] +  */
+                    "link" : 'https://www.chel-c.com/wx/index?sharePage=' + self.$route.path === '/' ? '' : self.$route.path + '&shareFrom=' + openId,    // 分享地址/* location.href.split('#')[0] +  */
                     "desc" : '原价699元，新生99元报名',   // 分享描述
                     "title" : '暑假英文阅读戏剧表演营'   // 分享标题
                 }

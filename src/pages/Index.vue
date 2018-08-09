@@ -13,14 +13,6 @@
 </template>
 
 <script>
-	import Vue from 'vue'
-	import service from '@/js/service'
-	import showMessage from 'vue-show-message'
-	
-	Vue.use(showMessage, {
-		duration: 2000
-	})
-
 	export default {
 		name: 'index',
 		data() {
@@ -30,23 +22,16 @@
 		},
 		mounted() {
 			let self = this;
-			if(process.env.NODE_ENV === 'development'){
-				self.login();
-			}
 			self.getUserInfo();
 		},
 		methods: { 
-			login() {
-				let self = this;
-				self.$axios.get('/wx/login')
-			},
 			getUserInfo() {
 				let self = this;
 				if(self.$store.state.userData !== null){
 					self.userData = self.$store.state.userData;
 					self.goToRouter(self.userData);
 				}else{
-					service.getUserInfo((res)=>{
+					self.$service.getUserInfo((res)=>{
 						self.userData = res.data;
 						self.goToRouter(self.userData);
 					}, (error) => {

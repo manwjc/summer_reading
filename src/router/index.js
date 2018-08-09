@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-//import Store from '../pages/Store'
 
 Vue.use(Router)
 
@@ -13,8 +12,6 @@ const SceneList = resolve => require(['../pages/SceneList'], resolve)
 const SceneCon = resolve => require(['../pages/SceneCon'], resolve)
 const SceneLastDay = resolve => require(['../pages/SceneLastDay'], resolve)
 const SceneShare = resolve => require(['../pages/SceneShare'], resolve)
-
-const OpeningActivity = resolve => require(['../pages/OpeningActivity'], resolve)
 
 export default new Router({
   routes: [
@@ -90,14 +87,5 @@ export default new Router({
         title: '乔希“小剧场”阅读表演营'
       }
     },
-    {
-      path: '/openingActivity',
-      name: 'openingActivity',
-      component: OpeningActivity,
-      meta: {
-        keepAlive: true,
-        title: '乔希家的书开业特权'
-      }
-    }
   ]
 })

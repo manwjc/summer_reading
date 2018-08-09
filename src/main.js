@@ -5,13 +5,20 @@ import App from './App'
 import router from './router'
 
 import axios from 'axios'
-import qs from 'qs';
+import qs from 'qs'
+import service from './js/service'
 
+import showMessage from 'vue-show-message'
+
+Vue.use(showMessage, {
+	duration: 2000
+})
+
+Vue.prototype.$service = service
 Vue.prototype.$qs = qs;
 
 if(process.env.NODE_ENV === 'development'){
 	let baseURL = '/baseApi'
-	console.log('baseURL:' + baseURL);
 	axios.defaults.baseURL = baseURL
 }
 Vue.prototype.$axios = axios
@@ -22,10 +29,8 @@ Object.keys(filters).forEach(key => {
 	Vue.filter(key, filters[key])
 });
 
-// import FastClick from 'fastclick'
+// import FastClick from 'fastclick'	//会导致el-upload点击异常,需要双击才能调起相册
 // FastClick.attach(document.body);
-
-// import store from './store/store.js'
 
 Vue.config.productionTip = false
 

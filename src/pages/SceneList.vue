@@ -1,10 +1,9 @@
 <template>
 	<div class="relative">
-		<div class="mask" v-show="maskShow" @click="hideMask"><img @click.prevent src="../assets/images/toShare.png"></div>
 		<img @click.prevent :src="topImg">
 		<div class="form_list01">
 			<div class="scene_list f22 bold" @click="redirect(item,index)" :class="[index % 2 === 1 ? 'minuleft20' : 'mleft20',{'gray' : item.isGray},classBg6_8]" v-for="(item, index) in listData">
-				<div class="scene_name" v-if="index < nameList.length - 1">{{index+1}}. {{item.name}} SCENE {{index+1}} {{item.length}}</div>
+				<div class="scene_name" v-if="index < listData.length - 1">{{index+1}}. {{item.name}} SCENE {{index+1}} {{item.length}}</div>
 				<div class="scene_name5" v-else>
 					{{index+1}}. {{item.name}}
 					<div>{{item.englishName}}</div>
@@ -12,7 +11,6 @@
 			</div>
 		</div>
 		<img @click.prevent src="static/images/page1_04.jpg">
-		<!-- <div @click.prevent="showMask"><img @click.prevent src="../assets/images/p_c_06.jpg"></div> -->
 	</div>
 </template>
 <script>
@@ -20,25 +18,7 @@
 		data() {
 			return {
 				topImg : "static/images/page1_01.jpg",
-				nameList: [
-						{
-							userName: 'jerry',
-						},
-						{
-							userName: 'jerry',
-						},
-						{
-							userName: 'jerry',
-						},
-						{
-							userName: 'jerry',
-						},
-						{
-							userName: 'jerry',
-						}
-					],
 				listData: [],
-				maskShow: false,
 				classBg6_8 : "",
 			}
 		},
@@ -53,7 +33,7 @@
 					return;
 				}
 				if(index === 4){
-					self.$router.push({ name: 'sceneLastDay', params: { }});
+					self.$router.push({ name: 'sceneLastDay'});
 				}
 				else{
 					self.$router.push({ name: 'sceneCon', params: { id: item.id }});
@@ -89,10 +69,7 @@
 			getList() {
 				let self = this;
 
-				self.$axios.get('/wx/chelApi/getCoursewareList', {
-					params: {}
-				})
-				.then((res)=>{
+				self.$service.getCoursewareList((res)=>{
 					if(res.data.code === '0'){
 						self.listData = res.data.data;
 						let date = new Date();
@@ -121,19 +98,9 @@
 							}
 						}
 					}
-				})
-				.catch((error) => {
+				}, (error) => {
 					alert(error)
 				})
-			},
-			showMask() {
-				this.maskShow = true;
-				document.body.scrollTop = 0;
-				document.body.style = 'overflow: hidden';
-			},
-			hideMask() {
-				this.maskShow = false;
-				document.body.style = 'overflow: inherit';
 			},
 		}
 	}

@@ -50,61 +50,14 @@
 </template>
 
 <script>
-	import Vue from 'vue'
 	import Valid from '../js/common/validate'
-	import showMessage from 'vue-show-message'
-	
-	Vue.use(showMessage, {
-		duration: 2000
-	})
 
 	export default {
-		name: 'applyFormNew',
 		data() {
 			return {
-				readingRooms: [
-					/* {name: '深圳太古城阅读馆'},
-					{name: '深圳华润城阅读馆'},
-					{name: '深圳Cococity阅读馆'},
-					{name: '深圳喜荟城阅读馆'},
-					{name: '深圳虹湾阅读馆'},
-					{name: '梅州万达阅读馆'},
-					{name: '成都九方阅读馆'},
-					{name: '宁波银泰城阅读馆'},
-					{name: '杭州新天地阅读馆'}, */
-				],
+				readingRooms: [],
 				defaultRoom: 1,
 				termList: [],
-				/* //3-5岁
-				termList01: [
-					// {time: '第一期 7月24日-7月28日 10:15-11:00'},
-					// {time: '第一期 7月24日-7月28日 15:15-16:00'},
-					// {time: '第一期 7月24日-7月28日 17:15-18:00'},
-					{time: '第二期 7月31日-8月4日 10:15-11:00'},
-					{time: '第二期 7月31日-8月4日 11:15-12:00'},
-					{time: '第二期 7月31日-8月4日 16:15-17:00'},
-					{time: '第三期 8月7日-8月11日 10:15-11:00'},
-					{time: '第三期 8月7日-8月11日 11:15-12:00'},
-					{time: '第四期 8月14日-8月18日 10:15-11:00'},
-					{time: '第四期 8月14日-8月18日 11:15-12:00'},
-					{time: '第五期 8月21日-8月25日 10:15-11:00'},
-					{time: '第五期 8月21日-8月25日 11:15-12:00'},
-				],
-				//6-8岁
-				termList02: [
-					// {time: '第一期 7月24日-7月28日 11:15-12:00'},
-					// {time: '第一期 7月24日-7月28日 14:15-15:00'},
-					// {time: '第一期 7月24日-7月28日 16:15-17:00'},
-					{time: '第二期 7月31日-8月4日 10:15-11:00'},
-					{time: '第二期 7月31日-8月4日 11:15-12:00'},
-					{time: '第二期 7月31日-8月4日 16:15-17:00'},
-					{time: '第三期 8月7日-8月11日 10:15-11:00'},
-					{time: '第三期 8月7日-8月11日 11:15-12:00'},
-					{time: '第四期 8月14日-8月18日 10:15-11:00'},
-					{time: '第四期 8月14日-8月18日 11:15-12:00'},
-					{time: '第五期 8月21日-8月25日 10:15-11:00'},
-					{time: '第五期 8月21日-8月25日 11:15-12:00'},
-				], */
 				defaultTerm: 1,
 				partNum: '',
 				userName: '',
@@ -134,21 +87,17 @@
 						termNum:self.termList[self.defaultTerm-1].time,
 					})
 
-				self.$axios.get('/wx/wxApi/getTermNum', {
+				//判断当前阅读馆当前期数是否已满额
+				self.$service.getTermNum({
 					params: {
 						termNum:self.termList[self.defaultTerm-1].time,
 						readRoomName:self.readingRooms[self.defaultRoom-1].name
 					}
-				}).then((res)=>{
+				}, (res)=>{
 					if(!res.data.data.canSignUp){
 						self.$showMsg('本期报名人数已满，欢迎到店领取精美绘本');
 					}else{
-						self.$axios({
-							method: "post",
-							url: "/wx/wxApi/signUp",
-							data: dataParams
-						})
-						.then((res) => {
+						self.$service.signUp(dataParams, (res) => {
 							let data = res.data;
 							if(data.code === '0'){
 								if(self.userData.code === '0'){
@@ -163,9 +112,7 @@
 							}else{
 								self.$showMsg(data.message)
 							}
-							//self.$router.push({name:"nameListNew",query:{id:1}})
-						})
-						.catch((error) => {
+						}, (error) => {
 							console.log(error)
 						})
 					}
@@ -219,16 +166,14 @@
 				}
 
 				self.$showMsg('验证码已发送');
-				self.$axios.get('/wx/wxApi/sendValidateCode', {
+				self.$service.sendValidateCode({
 					params: dataParams
-				})
-				.then((res)=>{
+				}, (res)=>{
 					var validCode = res.data.data;
 					if(validCode){
 						self.code = validCode;
 					}
-				})
-				.catch((error) => {
+				}, (error) => {
 					console.log(error)
 				})
 			},
@@ -253,13 +198,13 @@
 			},
 			getUserInfo() {
 				let self = this;
-				self.$axios.get('/wx/wxApi/getUserInfo').then((res)=>{
+				self.$service.getUserInfo((res)=>{
 					self.userData = res.data;
 				})
 			},
 			getReadRoomList() {
 				let self = this;
-				self.$axios.get('/wx/chelApi/getReadRoomList').then((res)=>{
+				self.$service.getReadRoomList((res)=>{
 					if(res.data.code === '0'){
 						let arr = res.data.data;
 						self.readingRooms = arr.map(function(val){
@@ -286,10 +231,9 @@
 					readRoomName:self.readingRooms[self.defaultRoom-1].name
 				}
 				
-				self.$axios.get('/wx/chelApi/getTermNumList', {
+				self.$service.getTermNumList({
 					params: dataParams
-				})
-				.then((res)=>{
+				}, (res)=>{
 					if(res.data.code === '0'){
 						let arr = res.data.data, termListData;
 						termListData = arr.map(function(val){

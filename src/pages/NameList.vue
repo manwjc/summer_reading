@@ -27,36 +27,11 @@
 </template>
 
 <script>
-	import Vue from 'vue'
-	import service from '@/js/service'
 	import headImg from '@/assets/images/head-img.jpg'
-	import showMessage from 'vue-show-message'
-	
-	Vue.use(showMessage, {
-		duration: 2000
-	})
 
 	export default {
 		data() {
 			return {
-				nameList: [
-						{
-							pic: headImg,
-							userName: 'jerry',
-						},
-						{
-							pic: headImg,
-							userName: 'jerry',
-						},
-						{
-							pic: headImg,
-							userName: 'jerry',
-						},
-						{
-							pic: headImg,
-							userName: 'jerry',
-						}
-					],
 				nameData: [],
 				maskShow: false,
 				isBuyUser: false
@@ -70,7 +45,7 @@
 		methods: { 
 			getUserInfo() {
 				let self = this;
-				service.getUserInfo((res)=>{
+				self.$service.getUserInfo((res)=>{
 					self.userData = res.data;
 					if(self.userData.code === '0'){
 						if(self.userData.data.isBuyUser === true){
@@ -86,15 +61,11 @@
 			getNameList() {
 				let self = this;
 
-				self.$axios.get('/wx/wxApi/recommendSignUp', {
-					params: {}
-				})
-				.then((res)=>{
+				self.$service.recommendSignUp((res)=>{
 					if(res.data.code === '0'){
 						self.nameData = res.data.data;
 					}
-				})
-				.catch((error) => {
+				}, (error) => {
 					alert(error)
 				})
 			},
