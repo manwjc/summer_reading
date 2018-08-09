@@ -93,7 +93,7 @@
 						termNum:self.termList[self.defaultTerm-1].time,
 						readRoomName:self.readingRooms[self.defaultRoom-1].name
 					}
-				}, (res)=>{
+				}, (res) => {
 					if(!res.data.data.canSignUp){
 						self.$showMsg('本期报名人数已满，欢迎到店领取精美绘本');
 					}else{
@@ -168,7 +168,7 @@
 				self.$showMsg('验证码已发送');
 				self.$service.sendValidateCode({
 					params: dataParams
-				}, (res)=>{
+				}, (res) => {
 					var validCode = res.data.data;
 					if(validCode){
 						self.code = validCode;
@@ -198,13 +198,13 @@
 			},
 			getUserInfo() {
 				let self = this;
-				self.$service.getUserInfo((res)=>{
+				self.$service.getUserInfo((res) => {
 					self.userData = res.data;
 				})
 			},
 			getReadRoomList() {
 				let self = this;
-				self.$service.getReadRoomList((res)=>{
+				self.$service.getReadRoomList((res) => {
 					if(res.data.code === '0'){
 						let arr = res.data.data;
 						self.readingRooms = arr.map(function(val){
@@ -233,7 +233,7 @@
 				
 				self.$service.getTermNumList({
 					params: dataParams
-				}, (res)=>{
+				}, (res) => {
 					if(res.data.code === '0'){
 						let arr = res.data.data, termListData;
 						termListData = arr.map(function(val){

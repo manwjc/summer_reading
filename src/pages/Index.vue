@@ -31,7 +31,7 @@
 					self.userData = self.$store.state.userData;
 					self.goToRouter(self.userData);
 				}else{
-					self.$service.getUserInfo((res)=>{
+					self.$service.getUserInfo((res) => {
 						self.userData = res.data;
 						self.goToRouter(self.userData);
 					}, (error) => {

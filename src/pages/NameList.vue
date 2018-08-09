@@ -59,7 +59,7 @@
 		methods: { 
 			getUserInfo() {
 				let self = this;
-				self.$service.getUserInfo((res)=>{
+				self.$service.getUserInfo((res) => {
 					self.userData = res.data;
 					if(self.userData.code === '0'){
 						if(self.userData.data.isBuyUser === true){
@@ -75,7 +75,7 @@
 			getNameList() {
 				let self = this;
 
-				self.$service.recommendSignUp((res)=>{
+				self.$service.recommendSignUp((res) => {
 					if(res.data.code === '0'){
 						self.nameData = res.data.data;
 					}

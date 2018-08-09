@@ -69,7 +69,7 @@
 			getList() {
 				let self = this;
 
-				self.$service.getCoursewareList((res)=>{
+				self.$service.getCoursewareList((res) => {
 					if(res.data.code === '0'){
 						self.listData = res.data.data;
 						let date = new Date();

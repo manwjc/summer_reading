@@ -34,7 +34,6 @@
 	import Valid from '@/js/common/validate'
 
 	export default {
-		name: 'applyFormNew',
 		data() {
 			return {
 				mobile: '',
@@ -52,7 +51,7 @@
 		methods: { 
 			getUserInfo() {
 				let self = this;
-				self.$service.getUserInfo((res)=>{
+				self.$service.getUserInfo((res) => {
 					let data = res.data;
 					if(data.code === '0'){
 						if(data.data && data.data.isBindPhone === true && data.data.isBuyUser === true){
@@ -80,7 +79,7 @@
 					return;
 				}
 
-				self.$service.bindMobile(dataParams, (res)=>{
+				self.$service.bindMobile(dataParams, (res) => {
 					if(res.data.code === '0'){
 						self.getUserInfo();
 					}else{
@@ -133,7 +132,7 @@
 				}
 
 				self.$showMsg('验证码已发送');
-				self.$service.sendValidateCode(dataParams, (res)=>{
+				self.$service.sendValidateCode(dataParams, (res) => {
 					var validCode = res.data.data;
 					if(validCode){
 						self.code = validCode;

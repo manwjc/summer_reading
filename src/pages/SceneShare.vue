@@ -46,7 +46,7 @@
 						id: self.$route.query.id, 
 						shareFrom: self.userData.data && self.userData.data !== null ? self.userData.data.openId : ''
 					}
-				}, (res)=>{
+				}, (res) => {
 					if(res.data.code === '0'){
 						self.videoUrl = utils.handleUrl(res.data.data.vidoUrl);
 					}else{

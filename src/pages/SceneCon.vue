@@ -90,7 +90,7 @@
 			}
 
 			self.getUserInfo();
-			self.$service.getCoursewareList((res)=>{
+			self.$service.getCoursewareList((res) => {
 				if(res.data.code === '0'){
 					for(let i=0,len=res.data.data.length;i<len;i++){
 						if(res.data.data[i].id === id){
@@ -136,7 +136,7 @@
 
 				fd.append('file', file)
 				fd.append('coursewareId',self.upLoadData)
-				self.$service.uploadVideo(fd, (res)=>{
+				self.$service.uploadVideo(fd, (res) => {
 					// alert(JSON.stringify(res))
 			        let data = res.data;
 

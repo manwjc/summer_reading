@@ -1,7 +1,7 @@
-import shareImg from '@/assets/images/share_img.jpg'
 import wx from 'weixin-js-sdk'
-import api from '@/js/api'
 import service from '@/js/service'
+import shareImg from '@/assets/images/share_img.jpg'
+
 export default {
     data() {
       return {

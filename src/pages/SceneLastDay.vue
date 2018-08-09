@@ -75,7 +75,7 @@
 			getList() {
 				let self = this;
 
-				self.$service.getReadRoomGradeVideo((res)=>{
+				self.$service.getReadRoomGradeVideo((res) => {
 					if(res.data.code === '0'){
 						self.listData = res.data.data;
 						self.listData.forEach(function(item, index){
