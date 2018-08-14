@@ -8,10 +8,6 @@ export default {
     validateMaskMobile: function(str){
         return /^[1](([3,4,5,7,8][0-9])|(66|98|99))([0-9]{8}|[0-9]{17,25})$/.test(str);
     },
-    //验证资金账号
-    validateAccount: function(str){
-        return /^([0-9]{8}|[0-9]{12})$/i.test(str);
-    },
     //验证用户名
     validateUsername: function(str){
         return /^[a-zA-Z][a-zA-Z0-9]*$/i.test(str);
@@ -32,14 +28,11 @@ export default {
     validateIDCard: function(str){
         return /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(str);
     },
-        //定投成功和冲工资成功验证推荐人规则
-    validateReferee: function(str){
-        return /^[A-Za-z0-9@#*]+$/.test(str);
-    },
-    //校验邮箱
+    //验证邮箱
     validateEmail: function(str){
         return /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(str);
     },
+    //验证账号
     validateName:function(str){
         return /^[a-z\u4e00-\u9fa5*]{2,12}$/.test(str);
     }

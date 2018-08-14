@@ -149,7 +149,7 @@
 						this.$showMsg(message)
 					}
 			    }, (error) => {
-			        alert(error)
+			        console.error(error)
 			    })
 				return false;	//拦截默认提交
 			},

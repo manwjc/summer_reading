@@ -80,12 +80,13 @@
 						self.nameData = res.data.data;
 					}
 				}, (error) => {
-					alert(error)
+					console.error(error)
 				})
 			},
 			showMask() {
 				this.maskShow = true;
 				document.body.scrollTop = 0;
+				document.documentElement.scrollTop = 0;
 				document.body.style = 'overflow: hidden';
 			},
 			hideMask() {

@@ -94,7 +94,7 @@
 						})
 					}
 				}, (error) => {
-					alert(error)
+					console.error(error)
 				})
 			},
 			showMask(item) {

@@ -22,24 +22,13 @@
 						<select class="input_normal boxflex01" v-model="defaultRoom" name="defaultRoom" @change="getTermNumList" v-else >
 							<option v-for="(item,index) in readingRooms"  :value="index+1">{{ item.name }}</option>
 						</select>
-
 					</p>
 					<p class="displaybox">
 						<label class="label_name" for="partNum">期数</label><span>：</span>
-						<!-- <input class="input_normal boxflex01" type="text" name="partNum" v-model="partNum"> -->
 						<select class="input_normal boxflex01" v-model="defaultTerm" name="defaultTerm" >
 							<option v-for="(item,index) in termList"  :value="index+1">{{ item.time }}</option>
 						</select>
 					</p>
-					<!-- <p class="displaybox">
-						<label class="label_name" for="mobile">手机</label><span>：</span>
-						<input class="input_normal boxflex01" type="text" name="mobile" v-model="mobile">
-					</p>
-					<p class="displaybox">
-						<label class="label_name" for="code">验证码</label><span>：</span>
-						<input class="input_normal boxflex01 wp100" type="text" name="code" v-model="code">
-						<label class="label_name mleft10 grey" @click="getCode">验证码</label>
-					</p> -->
 				</form>
 			</div>
 		</div>
@@ -70,7 +59,7 @@
 			this.getReadRoomList();
 		},
 		methods: { 
-			submitForm() {
+			async submitForm() {
 				let self = this;
 				let validateMsg = self.validateResult();
 				let dataParams;
@@ -81,43 +70,41 @@
 				}
 				
 				dataParams = self.$qs.stringify({
-						signName:self.userName,
-						age:self.userAge,
-						readRoomName:self.readingRooms[self.defaultRoom-1].name,
-						termNum:self.termList[self.defaultTerm-1].time,
-					})
-
+					signName:self.userName,
+					age:self.userAge,
+					readRoomName:self.readingRooms[self.defaultRoom-1].name,
+					termNum:self.termList.length > 0 && self.termList[self.defaultTerm-1].time,
+				})
+				
 				//判断当前阅读馆当前期数是否已满额
-				self.$service.getTermNum({
+				const termListData = await self.$service.getTermNumList();
+				const termNumData = await self.$service.getTermNum({
 					params: {
-						termNum:self.termList[self.defaultTerm-1].time,
+						termNum:self.termList.length > 0 && self.termList[self.defaultTerm-1].time,
 						readRoomName:self.readingRooms[self.defaultRoom-1].name
 					}
-				}, (res) => {
-					if(!res.data.data.canSignUp){
-						self.$showMsg('本期报名人数已满，欢迎到店领取精美绘本');
-					}else{
-						self.$service.signUp(dataParams, (res) => {
-							let data = res.data;
-							if(data.code === '0'){
-								if(self.userData.code === '0'){
-									if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
-										self.$router.push({name:"nameList"})
-									}else{
-										self.toPay(data.data);
-									}
-								}else{
-									self.$showMsg(self.userData.message);
-								}
-							}else{
-								self.$showMsg(data.message)
-							}
-						}, (error) => {
-							console.log(error)
-						})
-					}
-				})
+				});
+				const signUpData = await self.$service.signUp(dataParams);
 
+				if(!termNumData.data.data.canSignUp){
+					self.$showMsg('本期报名人数已满，欢迎到店领取精美绘本');
+				}else{
+					let data = signUpData.data;
+					if(data.code === '0'){
+						if(self.userData.code === '0'){
+							if(self.userData.data.isBindPhone === true && self.userData.data.isBuyUser === true){
+								self.$router.push({name:"nameList"})
+							}else{
+								self.toPay(data.data);
+							}
+						}else{
+							self.$showMsg(self.userData.message);
+						}
+					}else{
+						const msg = data.message || 'signUp接口异常';
+						self.$showMsg(msg);
+					}
+				}
 			},
 			validateResult:function () {
 				var self = this,
@@ -217,8 +204,9 @@
 					}
 				})
 			},
-			getTermNumList() {
-				let self = this, dataParams;
+			async getTermNumList() {
+				let self = this, 
+					dataParams;
 
 				if(!self.userAge){
 					self.$showMsg('请填写宝贝年龄');
@@ -231,34 +219,21 @@
 					readRoomName:self.readingRooms[self.defaultRoom-1].name
 				}
 				
-				self.$service.getTermNumList({
-					params: dataParams
-				}, (res) => {
-					if(res.data.code === '0'){
-						let arr = res.data.data, termListData;
-						termListData = arr.map(function(val){
-							var obj = {};
-							obj.time = val;
-							return obj;
-						})
-						self.termList = termListData;
-					}else{
-						self.$showMsg(res.data.message);
-					}
-				})
-			}
+				const termNumData = await self.$service.getTermNumList();
 
-		},
-		/* watch: {
-			userAge(val){
-				let self = this;
-				if(val && val*1 < 6){
-					self.termList = self.termList01;
-				}else if(val && val*1 >= 6){ 
-					self.termList = self.termList02;
+				if(termNumData.data.code === '0'){
+					let termArray = termNumData.data.data;
+					let termListData = termArray.map(function(val){
+						var obj = {};
+						obj.time = val;
+						return obj;
+					})
+					self.termList = termListData;
+				}else{
+					self.$showMsg(termNumData.data.message);
 				}
-　　　　　　 },
-		} */
+			}
+		}
 	}
 </script>
 

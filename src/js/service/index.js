@@ -50,29 +50,35 @@ export default {
     },
     //获取期数判断当前阅读馆当前期数是否已满额
     getTermNum: function(params, success, fail) {
-        axios.get(api.getTermNum, params).then((res)=>{
-            success && success(res);
-        })
-        .catch((error) => {
-            fail && fail(error);
+        return new Promise((resolve, reject) => {
+            axios.get(api.getTermNum, params).then((res)=>{
+                resolve(res);
+            })
+            .catch((error) => {
+                fail && fail(error);
+            })
         })
     },
     //获取期数
     getTermNumList: function(params, success, fail) {
-        axios.get(api.getTermNumList, params).then((res)=>{
-            success && success(res);
-        })
-        .catch((error) => {
-            fail && fail(error);
+        return new Promise((resolve, reject) => {
+            axios.get(api.getTermNumList, params).then((res)=>{
+                resolve(res);
+            })
+            .catch((error) => {
+                reject(error);
+            })
         })
     },
     //提交报名
     signUp: function(params, success, fail) {
-        axios.post(api.signUp, params).then((res)=>{
-            success && success(res);
-        })
-        .catch((error) => {
-            fail && fail(error);
+        return new Promise((resolve, reject) => {
+            axios.post(api.signUp, params).then((res)=>{
+                resolve(res);
+            })
+            .catch((error) => {
+                reject(error);
+            })
         })
     },
     //获取课程列表

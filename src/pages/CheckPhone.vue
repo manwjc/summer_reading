@@ -89,7 +89,7 @@
 					self.$showMsg(error)
 				})
 			},
-			validateResult:function () {
+			validateResult() {
                 var self = this,
                     names = [
                         {name:'mobile', reg:Valid.validateMobile},
@@ -115,7 +115,7 @@
                 }
                 return message;
 			},
-			getCode: function(){
+			getCode(){
 				let self = this;
 				let mobile = self.mobile,
 					dataParams = {
